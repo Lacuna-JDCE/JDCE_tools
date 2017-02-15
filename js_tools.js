@@ -24,10 +24,8 @@ module.exports =
 			// We are only interested in functions (declarations and expressions).
 			if(node.type == 'FunctionDeclaration' || node.type == 'FunctionExpression')
 			{
-				// Save the type, source location and the source location of the function body.
-				functions.push(
+				let function_data =
 				{
-					type: node.type == 'FunctionDeclaration' ? 'declaration' : 'expression',
 					start: node.range[0],
 					end: node.range[1],
 					body:
@@ -35,7 +33,19 @@ module.exports =
 						start: node.body.range[0],
 						end: node.body.range[1]
 					}
-				});
+				};
+
+				if(node.type == 'FunctionDeclaration')
+				{
+					function_data.type = 'declaration';
+					function_data.name = node.id.name;
+				}else{
+					// If it's not a FunctionDeclaration, it must be a FunctionExpression.
+					function_data.type = 'expression';
+				}
+
+				// Save the function data.
+				functions.push(function_data);
 			}
 		});
 
@@ -69,7 +79,8 @@ module.exports =
 				{
 					type: func.type,
 					start: func.start,
-					end: func.end
+					end: func.end,
+					name: func.name ? func.name : ''
 				});
 			}
 		});
@@ -90,7 +101,7 @@ module.exports =
 		uncalled_functions.forEach(function(func)
 		{
 			// If the function type is an expression, replace it with an empty function, otherwise (i.e. function declaration) remove it completely.
-			let insert = func.type == 'expression' ? 'function(){}' : '';
+			let insert = func.type == 'expression' ? 'function(){}' : ('function ' + func.name + '(){}');
 
 			// Remove source code from the starting position (minus offset, i.e. the length of code we removed already), length of the function is still end - start.
 			source_code = source_code.splice(func.start - offset, func.end - func.start, insert);
