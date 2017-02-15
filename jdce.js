@@ -155,8 +155,9 @@ setTimeout(function()
 {
 	chromium_process.kill('SIGINT');
 
-	// Now that we're done with running Chromium, remove the logger receiver function from the <head>.
-	// TODO FIXME ^
+	// Now that we're done with running Chromium, remove the logger receiver function from the <head> tag.
+	html_source = html_source.splice(head_index + 6, logger_tag.length, '');	// '<head>'.length is 6, head_index is the start position of the tag.
+	file_system.writeFileSync(settings.html_path, html_source);
 
 	// Process the Chromium output by removing any output that is not a log call and saving the formatted function calls.
 	let log_calls = [],
