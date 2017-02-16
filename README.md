@@ -24,7 +24,7 @@ Requires the following applications on the host system:
 ```
 node jdce.js <directory> [options]
 ```
-*<directory>* is the directory the tool is run upon (mandatory). *[options]* allow you to specify more settings:
+_directory_ is the directory the tool is run upon (mandatory). _options_ allow you to specify more settings:
 
 | Long      | Short | Description                                    | Default    |
 |-----------|-------|------------------------------------------------|------------|
