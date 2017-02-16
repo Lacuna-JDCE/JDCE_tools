@@ -101,7 +101,7 @@ module.exports =
 		uncalled_functions.forEach(function(func)
 		{
 			// If the function type is an expression, replace it with an empty function, otherwise (i.e. function declaration) remove it completely.
-			let insert = func.type == 'expression' ? 'function(){}' : ('function ' + func.name + '(){}');
+			let insert = func.type == 'expression' ? 'function(){/*JDCE v0.1*/}' : ('function ' + func.name + '(){/* JDCE */}');
 
 			// Remove source code from the starting position (minus offset, i.e. the length of code we removed already), length of the function is still end - start.
 			source_code = source_code.splice(func.start - offset, func.end - func.start, insert);

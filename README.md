@@ -9,6 +9,7 @@ This Node.js script dynamically analyses a web application within a directory an
 
 ## Prerequisites
 Requires a directory with a main HTML file. This file should have an `<head>` tag.
+Also assumes all JS files are valid (i.e. no parse errors).
 
 
 
