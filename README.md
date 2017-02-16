@@ -22,17 +22,20 @@ Requires the following applications on the host system:
 
 ## Running
 ```
-node jdce.js <directory> [options]
+node ./jdce.js <directory> [options]
 ```
 _directory_ is the directory the tool is run upon (mandatory). _options_ allow you to specify more settings:
 
-| Long      | Short | Description                                    | Default    |
-|-----------|-------|------------------------------------------------|------------|
-| --timeout | -t    | Specify the Chromium run time in milliseconds. | 5000       |
-| --index   | -i    | Specify the main HTML file.                    | index.html |
+| Long         | Short | Description                                             | Default             |
+|--------------|-------|---------------------------------------------------------|---------------------|
+| --verbose    | -v    | Output information about removed functions.             |                     |
+| --index      | -i    | Specify the main HTML file.                             | index.html          |
+| --timeout    | -t    | Specify the Chromium run time in milliseconds.          | 5000                |
+| --useragent  | -u    | Set the Chromium user agent.                            | default user agent  |
+| --windowsize | -w    | Set the Chromium window size (formatted _width,height_) | default window size |
 
 
-Example: directory _foo_ with index file _app.html_ and a run time of 10 seconds:
+Example: directory _foo_ with index file _app.html_ and a Chromium run time of 10 seconds with a window size of 600x800 pixels:
 ```
-node jdce.js foo --index app.html --timeout 10000
+node jdce.js foo --index app.html --timeout 10000 --windowsize 600,800
 ```

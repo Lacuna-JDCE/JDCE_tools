@@ -35,24 +35,39 @@ const argument_parser = require('command-line-args'),
 
 
 // Get command line arguments.
-const options = argument_parser(
-[
-	{ name: 'directory', type: String, defaultOption: true },
-	{ name: 'index', type: String, alias: 'i' },
-	{ name: 'timeout', type: Number, alias: 't' }
-]);
+let options;
+
+try
+{
+	options = argument_parser(
+	[
+		{ name: 'directory', type: String, defaultOption: true },
+		{ name: 'index', type: String, alias: 'i' },
+		{ name: 'timeout', type: Number, alias: 't' },
+		{ name: 'verbose', type: Boolean, alias: 'v' },
+		{ name: 'useragent', type: String, alias: 'u' },
+		{ name: 'windowsize', type: String, alias: 'w' }
+	]);
+}catch(exception)
+{
+	console.log(exception.message);
+	process.exit(1);
+}
 
 if( ! options['directory'] )
 {
 	console.error('No directory specified.');
-	process.exit(1);
+	process.exit(2);
 }
 
 // Extend our settings with the command line arguments (if available).
 let settings =
 {
 	index: 'index.html',
-	timeout: 5000
+	timeout: 5000,
+	verbose: false,
+	useragent: false,
+	windowsize: false
 }.extend(options);
 
 // Add the complete HTML file path to the settings for easy access.
@@ -63,13 +78,13 @@ settings.html_path = path.normalize(settings.directory + '/' + settings.index);
 if( ! file_system.existsSync(settings.directory) )
 {
 	console.error('Directory', settings.directory, 'doesn\'t exist or isn\'t readable.');
-	process.exit(2);
+	process.exit(3);
 }
 
 if( ! file_system.existsSync(settings.html_path) )
 {
 	console.error('File', settings.html_path, 'doesn\'t exist or isn\'t readable.');
-	process.exit(3);
+	process.exit(4);
 }
 
 
@@ -83,7 +98,7 @@ let logger_tag = '<script>' + js_tools.logger.receiver() + '</script>';
 if( head_index == -1 )
 {
 	console.error('File', settings.html_path, 'doesn\'t have a <head> tag, can\'t insert logger function.');
-	process.exit(4);
+	process.exit(5);
 }
 
 // If we found the <head> tag, insert the logger function.
@@ -140,9 +155,24 @@ for(let file in source_data)
 }
 
 
+// Chromium arguments contains at least the HTML file to load.
+let chromium_arguments = [settings.html_path];
+
+// Check if we want to set other chromium options.
+if( settings.useragent )
+{
+	chromium_arguments.push('--user-agent=' + settings.useragent);
+}
+
+if( settings.windowsize )
+{
+	chromium_arguments.push('--window-size=' + settings.windowsize);
+}
+
+
 // Spin up a headless Chromium instance.
 let chromium_output = '',
-    chromium_process = headless_chromium.spawn([settings.html_path], {});
+    chromium_process = headless_chromium.spawn(chromium_arguments, {});
 
 // Whenever output is available, save it.
 chromium_process.stdout.on('data', function(data)
@@ -189,15 +219,30 @@ function process_log_calls(log_calls)
 			called_functions[log.file] = [];
 		}
 
-		called_functions[log.file].push( {start: log.start, end: log.end} );
+		// Remove duplicate calls (a function can be called twice or more) so we don't do unnecessary work.
+		let exists = function(entry)
+		{
+			return entry.start == log.start && entry.end == log.end;
+		};
+
+		if( ! called_functions[log.file].some( exists ) )
+		{	
+			called_functions[log.file].push( {start: log.start, end: log.end} );
+		}
 	});
 
 	for(let file in source_data)
 	{
-		if( source_data.hasOwnProperty(file) )
+		if( source_data.hasOwnProperty(file) )	
 		{
 			// Get a list with uncalled functions, based on all functions in this file and the ones called.
-			let uncalled_functions = js_tools.get_uncalled_functions( source_data[file].functions, called_functions[file]||[] );	// It's possible there were no called functions.
+			let uncalled_functions = js_tools.get_uncalled_functions( source_data[file].functions, (called_functions[file] || []) );	// It's possible there were no called functions, in that case use an empty array.
+
+			// Output some info about the uncalled functions we've removed (if the verbose option is on).
+			buffer_file_stats(file, source_data[file].functions.length, uncalled_functions.length, (called_functions[file] || []).length );
+
+			// First, remove any uncalled functions that are nested within other uncalled functions, because removing an outer function also removes the inner function.
+			uncalled_functions = js_tools.remove_nested_functions(uncalled_functions);
 
 			// Generate new source code by removing the uncalled functions in this file.
 			let new_source = js_tools.remove_uncalled_functions( source_data[file].source, uncalled_functions );
@@ -205,4 +250,48 @@ function process_log_calls(log_calls)
 			file_system.writeFileSync(file, new_source);
 		}
 	}
+
+	output_stats();
+}
+
+
+
+let stats = [];
+
+function buffer_file_stats(file_name, all, uncalled, called)
+{
+	stats.push(
+	{
+		file: file_name,
+		all: all,
+		called: called,
+		uncalled: uncalled
+	});
+
+	if(settings.verbose)
+	{
+		console.log(file_name);
+		console.log('  ', all, 'functions total');
+		console.log('  ', called, 'functions called');
+		console.log('  ', uncalled, 'functions not called (removed)');
+	}
+}
+
+
+function output_stats()
+{
+	let totals = stats.reduce(function(accumulator, value)
+	{
+		return [
+			value.all + accumulator[0],
+			value.called + accumulator[1],
+			value.uncalled + accumulator[2]
+		];
+	}, [0, 0, 0]);
+
+	console.log('Total');
+	console.log('  ', stats.length, 'files');
+	console.log('  ', totals[0], 'functions total');
+	console.log('  ', totals[1], 'functions called');
+	console.log('  ', totals[2], 'functions not called (removed)');
 }

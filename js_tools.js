@@ -92,16 +92,13 @@ module.exports =
 	// Remove uncalled functions from a file, given the source code and a list of uncalled functions (from this.get_uncalled_functions()).
 	remove_uncalled_functions: function(source_code, uncalled_functions)
 	{
-		// First, remove any uncalled functions that are nested within other uncalled functions, removing an outer function also removes the inner function.
-		uncalled_functions = this.remove_nested_functions(uncalled_functions);
-
 		// Keep track of how much we removed, as it changes the start position of subsequent functions.
 		let offset = 0;
 
 		uncalled_functions.forEach(function(func)
 		{
 			// If the function type is an expression, replace it with an empty function, otherwise (i.e. function declaration) remove it completely.
-			let insert = func.type == 'expression' ? 'function(){/*JDCE v0.1*/}' : ('function ' + func.name + '(){/* JDCE */}');
+			let insert = func.type == 'expression' ? 'function(){}' : ('function ' + func.name + '(){}');
 
 			// Remove source code from the starting position (minus offset, i.e. the length of code we removed already), length of the function is still end - start.
 			source_code = source_code.splice(func.start - offset, func.end - func.start, insert);
