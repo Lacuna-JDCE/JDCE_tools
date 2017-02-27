@@ -28,14 +28,22 @@ _directory_ is the directory the tool is run upon (mandatory). _options_ allow y
 
 | Long         | Short | Description                                             | Default             |
 |--------------|-------|---------------------------------------------------------|---------------------|
-| --verbose    | -v    | Output information about removed functions.             |                     |
+| --verbose    | -v    | Output per-file information about removed functions.    |                     |
+| --csv        | -c    | Enable output to CSV file in addition to stdout.        |                     |
+| --csvfile    | -f    | Specify CSV file to append data to (only with --csv).   | output.csv          |
 | --index      | -i    | Specify the main HTML file.                             | index.html          |
 | --timeout    | -t    | Specify the Chromium run time in milliseconds.          | 5000                |
 | --useragent  | -u    | Set the Chromium user agent.                            | default user agent  |
 | --windowsize | -w    | Set the Chromium window size (formatted _width,height_) | default window size |
 
 
-Example: directory _foo_ with index file _app.html_ and a Chromium run time of 10 seconds with a window size of 600x800 pixels:
+The csv file has the following columns:
 ```
-node jdce.js foo --index app.html --timeout 10000 --windowsize 600,800
+directory name, JS files processed, # functions, # functions removed, run time (in ms), error messages
+```
+
+### Example
+Directory _foo_ with index file _app.html_ and a Chromium run time of 10 seconds with a window size of 600x800 pixels, appending result data to _bar.csv_:
+```
+node jdce.js foo --index app.html --timeout 10000 --windowsize 600,800 --csv --csvfile bar.csv
 ```

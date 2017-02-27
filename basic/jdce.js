@@ -33,6 +33,17 @@ const argument_parser = require('command-line-args'),
       headless_chromium = require('run-headless-chromium');
 
 
+// Keep a timer, so we know how long the tool took to run.
+let start_time = process.hrtime();
+
+// Function that returns the run time (in nanoseconds) when called.
+function runtime()
+{
+	let end_time = process.hrtime(start_time);
+	let time = end_time[0] * 1e9 + end_time[1];
+
+	return time;
+}
 
 // Get command line arguments.
 let options;
@@ -46,7 +57,9 @@ try
 		{ name: 'timeout', type: Number, alias: 't' },
 		{ name: 'verbose', type: Boolean, alias: 'v' },
 		{ name: 'useragent', type: String, alias: 'u' },
-		{ name: 'windowsize', type: String, alias: 'w' }
+		{ name: 'windowsize', type: String, alias: 'w' },
+		{ name: 'csv', type: Boolean, alias: 'c' },
+		{ name: 'csvfile', type: String, alias: 'f' }
 	]);
 }catch(exception)
 {
@@ -67,22 +80,52 @@ let settings =
 	timeout: 5000,
 	verbose: false,
 	useragent: false,
-	windowsize: false
+	windowsize: false,
+	csv: false,
+	csvfile: 'output.csv'
 }.extend(options);
 
 // Add the complete HTML file path to the settings for easy access.
 settings.html_path = path.normalize(settings.directory + '/' + settings.index);
 
 
+// Function for appending data to the csv file.
+function append_to_csv(data)
+{
+	if( settings.csv === false)
+	{
+		return;
+	}
+
+	data.unshift(settings.directory);
+
+	// Runtime in ns -> ms
+	data[4] = (data[4] * 1e-6).toFixed(0);
+
+	let line = data.join(',') + '\n';
+
+	file_system.appendFileSync(settings.csvfile, line, function(error)
+	{
+		console.error('Failed to write to file', settings.csvfile, ':', error);
+		process.exit(6);
+	});
+}
+
+
+
 // Check if directory and HTML file exist.
 if( ! file_system.existsSync(settings.directory) )
 {
+	append_to_csv(['', '', '', runtime(), 'Directory ' + settings.directory + ' doesn\'t exist or isn\'t readable']);
+
 	console.error('Directory', settings.directory, 'doesn\'t exist or isn\'t readable.');
 	process.exit(3);
 }
 
 if( ! file_system.existsSync(settings.html_path) )
 {
+	append_to_csv(['', '', '', runtime(), 'File ' + settings.html_path + ' doesn\'t exist or isn\'t readable']);
+
 	console.error('File', settings.html_path, 'doesn\'t exist or isn\'t readable.');
 	process.exit(4);
 }
@@ -97,6 +140,8 @@ let logger_tag = '<script>' + js_tools.logger.receiver() + '</script>';
 // If we can't find a <head> tag, we can't insert the logger.
 if( head_index == -1 )
 {
+	append_to_csv(['', '', '', runtime(), 'File ' + settings.html_path + ' doesn\'t have a <head> tag, can\'t insert logger function']);
+
 	console.error('File', settings.html_path, 'doesn\'t have a <head> tag, can\'t insert logger function.');
 	process.exit(5);
 }
@@ -289,9 +334,12 @@ function output_stats()
 		];
 	}, [0, 0, 0]);
 
+	append_to_csv([script_files.length, totals[0], totals[2], runtime(), '']);
+
 	console.log('Total');
 	console.log('  ', stats.length, 'files');
 	console.log('  ', totals[0], 'functions total');
 	console.log('  ', totals[1], 'functions called');
 	console.log('  ', totals[2], 'functions not called (removed)');
+	console.log('   runtime:', (runtime() * 1e-6).toFixed(0), 'milliseconds');
 }
