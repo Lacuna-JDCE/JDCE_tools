@@ -1,0 +1,3 @@
+[submodule "static/javascript-call-graph"]
+	path = static/javascript-call-graph
+	url = git@github.com:abort/javascript-call-graph.git
