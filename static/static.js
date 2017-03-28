@@ -116,7 +116,11 @@ let functions_called = {};	// file_name: [ {start, end}, ...]
 // Retrieve all called functions
 cg.edges.iter(function(caller, called)
 {
-	if(called.type == 'NativeVertex') return;	// We don't care about called built-in functions.
+	if(called.type == 'NativeVertex')
+	{
+		// We don't care about native functions (e.g. Math.floor).
+		return;
+	};
 
 	let file = called.func.attr.enclosingFile;
 	let start = called.func.range[0];
@@ -151,6 +155,7 @@ js_tags.forEach(function(file)
 	// Retrieve a list of functions in this file.
 	all_functions[file] = js_tools.get_function_list( source );
 });
+
 
 
 js_tags.forEach(function(file)
