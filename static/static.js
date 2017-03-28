@@ -1,6 +1,5 @@
 /*
 	JavaScript static dead code elimination tool.
-	v1.0
 	Niels Groot Obbink
 */
 

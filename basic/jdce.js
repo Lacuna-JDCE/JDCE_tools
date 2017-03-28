@@ -1,23 +1,6 @@
 /*
 	JavaScript dead code elimination tool.
-	v1.0
 	Niels Groot Obbink
-
-	Removes unused functions from a web application in a directory.
-	Dynamically analyse the application (startup only; might remove event listener functions and timeout/intervals).
-	Does not work on scripts embedded in the HTML document.
-
-	Requires an HTML file with a <head> tag. Analyses all .js files in the directory (recursive).
-
-	Warning: this tool re-writes all JavaScript files in the directory! Remember to back up your code before running.
-
-
-	Usage: node jdce.js directory [--index filename] [--timeout ms]
-
-	The directory to run the DCE tool upon is required. The following are optional:
-
-		--index (or -i): specify main app HTML file (default: index.html)
-		--timeout (or -t): specify Chromium run timeout in milliseconds (default: 5000)
 */
 
 'use strict';
