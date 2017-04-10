@@ -266,11 +266,11 @@ function process_log_calls(log_calls)
 			// Get a list with uncalled functions, based on all functions in this file and the ones called.
 			let uncalled_functions = js_tools.get_uncalled_functions( source_data[file].functions, (called_functions[file] || []) );	// It's possible there were no called functions, in that case use an empty array.
 
-			// Output some info about the uncalled functions we've removed (if the verbose option is on).
-			buffer_file_stats(file, source_data[file].functions.length, uncalled_functions.length, (called_functions[file] || []).length );
-
 			// First, remove any uncalled functions that are nested within other uncalled functions, because removing an outer function also removes the inner function.
 			uncalled_functions = js_tools.remove_nested_functions(uncalled_functions);
+
+			// Output some info about the uncalled functions we've removed (if the verbose option is on).
+			buffer_file_stats(file, source_data[file].functions.length, uncalled_functions.length, (called_functions[file] || []).length );
 
 			// Generate new source code by removing the uncalled functions in this file.
 			let new_source = js_tools.remove_uncalled_functions( source_data[file].source, uncalled_functions );
