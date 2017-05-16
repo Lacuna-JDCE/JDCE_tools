@@ -53,6 +53,12 @@ let edge = function(_type,/* _from,*/ _to)
 	};
 
 
+	this.remove_type = function(_type)
+	{
+		type = type & ~ _type;
+	};
+
+
 	this.get_to = function()
 	{
 		return to;

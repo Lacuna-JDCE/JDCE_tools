@@ -7,7 +7,7 @@
 
 
 const Graph = require('./graph'),
-      GraphTools = require('./graphtools'),
+      GraphTools = require('./graph_tools'),
       file_system = require('fs'),
       path = require('path'),
       webpage_tools = require('./webpage_tools'),
@@ -59,9 +59,36 @@ function get_algorithms(filter)
 }
 
 
+function get_script_by_id(script_data, id)
+{
+	for(let i = 0; i < script_data.length; i++)
+	{
+		if( script_data[i].id == id )
+		{
+			return script_data[i];
+		}
+	}
+}
+
+
+
+function remove_uncalled_functions(script_data, nodes)
+{
+console.log(script_data);
+	nodes.forEach(function(node)
+	{
+		let func = node.get_data(),
+		    script = get_script_by_id(script_data, func.id);
+
+		// TODO FIXME
+	});
+}
+
+
+
 module.exports =
 {
-	run: function(settings, callback)	// FIXME REMOVEME settings: html_path, directory, algorithm.
+	run: function(settings, callback)
 	{
 		// Keep a timer, so we know how long the tool took to run.
 		let start_time = process.hrtime();
@@ -78,8 +105,12 @@ module.exports =
 
 		// Retrieve all scripts in this page (ordered based on execution order).
 		let scripts = webpage_tools.get_scripts( settings.html_path, settings.directory );
-		// Create a graph with each function as a node. Returns a list of nodes.
+
+		// Create a graph with each function as a node, plus the base caller node.
 		let nodes = GraphTools.build_function_graph(scripts);
+
+		// The number of functions is the number of nodes in the graph, minus one for the base caller node.
+		stats.function_count = nodes.length - 1;
 
 
 		// Get a list of readily prepared algorithm functions (but only those in the settings.algorithm list).
@@ -94,10 +125,22 @@ module.exports =
 		};
 
 		// Run each algorithm in turn, letting it edit the graph (mark edges).
-		async_loop(algorithms, algorithm_settings, function(result_nodes)
+		async_loop(algorithms, algorithm_settings, function()
 		{
+			// Once we're done with all the algorithms, remove any edge that was constructed.
+			nodes = GraphTools.remove_constructed_edges(nodes);
+
+			let disconnected_nodes = GraphTools.get_disconnected_nodes(nodes);
+
+			// Do the actual work: remove all nodes that are disconnected (= functions without incoming edges = uncalled functions).
+			remove_uncalled_functions(scripts, disconnected_nodes);
+
+			// The number of removed functions equals the number of nodes without any incoming edges (a disconnected node).
+			// The base caller node is never disconnected, so don't subtract from this.
+			stats.functions_removed = disconnected_nodes.length;
+
 			return_results();
-		});	
+		});
 
 
 		function return_results()
