@@ -24,17 +24,17 @@ npm install
 ```
 node ./hybrid.js <directory> [options]
 ```
-_directory_ is the directory the tool is run upon (mandatory). _options_ allow you to specify more settings:
+_directory_ is the directory the tool is run upon (mandatory); this should be a relative path. _options_ allow you to specify more settings:
 
 | Long         | Short | Description                                             | Default             |
 |--------------|-------|---------------------------------------------------------|---------------------|
 | --index      | -i    | Specify the main HTML file.                             | index.html          |
-| --verbose    | -v    | Show output to stdout.                                  |                     |  
+| --verbose    | -v    | Show output to stdout.                                  |                     |
 | --csv        | -c    | Enable output to CSV file in addition to stdout.        |                     |
 | --csvfile    | -f    | Specify CSV file to append data to (only with --csv).   | output.csv          |
 | --graph      | -g    | Enable function graph output.                           |                     |
 | --graphfile  | -d    | Specify graph (DOT) output location (only with --graph) | output.dot          |
-| --algorithm  | -a    | Specify algorithms (space separated).                   | static dynamic      |
+| --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
 
 
 The following algorithms are available:
@@ -56,8 +56,8 @@ The graph file is outputted in DOT format, which you can visualize e.g. [here](h
 
 
 ### Example
-Directory _foo_ with index file _app.html_, appending result data to _bar.csv_:
+Directory _foo_ with index file _app.html_, appending result data to _bar.csv_, with the static and dynamic algorithms:
 ```
-node hybrid.js foo --index app.html --csv --csvfile bar.csv
+node hybrid.js foo --index app.html --csv --csvfile bar.csv --algorithm static dynamic
 ```
 

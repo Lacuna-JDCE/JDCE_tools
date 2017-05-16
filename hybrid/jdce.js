@@ -6,10 +6,57 @@
 'use strict';
 
 
-let Graph = require('./graph'),
-    GraphTools = require('./graphtools'),
-    file_system = require('fs'),
-    webpage_tools = require('./webpage_tools');
+const Graph = require('./graph'),
+      GraphTools = require('./graphtools'),
+      file_system = require('fs'),
+      path = require('path'),
+      webpage_tools = require('./webpage_tools'),
+      async_loop = require('./async_retval_loop');
+
+
+
+
+function get_available_algorithms(folder)
+{
+	let available_instances = [],
+	    files = file_system.readdirSync(folder);
+
+	for(let i = 0; i < files.length; i++)
+	{
+		let file = files[i],
+		    split = file.split('.');
+
+		if(split.pop() == 'js')
+		{
+			available_instances.push( split.join('.') );
+		}
+	}
+
+	return available_instances;
+}
+
+
+function get_algorithms(filter)
+{
+	const folder = 'algorithms';
+
+	let algorithms = [],
+	    available_algorithms = get_available_algorithms(folder);
+
+	filter.forEach(function(name)
+	{
+		if( available_algorithms.indexOf( name ) != -1 )
+		{
+			let require_name = './' + path.join(folder, name);
+			let algorithm = require(require_name);
+			let instance = new algorithm();
+
+			algorithms.push( instance.run );
+		}
+	});
+
+	return algorithms;
+}
 
 
 module.exports =
@@ -35,13 +82,23 @@ module.exports =
 		let nodes = GraphTools.build_function_graph(scripts);
 
 
+		// Get a list of readily prepared algorithm functions (but only those in the settings.algorithm list).
+		let algorithms = get_algorithms(settings.algorithm);
+		// Build the correct settings object for the algorithms.
+		let algorithm_settings =
+		{
+			directory: path.join('../', settings.directory),
+			html_path: path.join('../', settings.html_path),
+			scripts: scripts,
+			nodes: nodes
+		};
 
+		// Run each algorithm in turn, letting it edit the graph (mark edges).
+		async_loop(algorithms, algorithm_settings, function(result_nodes)
+		{
+			return_results();
+		});	
 
-
-
-
-
-		return_results();
 
 		function return_results()
 		{

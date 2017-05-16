@@ -47,6 +47,12 @@ let edge = function(_type,/* _from,*/ _to)
 	};
 
 
+	this.add_type = function(_type)
+	{
+		type = type | _type;
+	};
+
+
 	this.get_to = function()
 	{
 		return to;
@@ -55,7 +61,7 @@ let edge = function(_type,/* _from,*/ _to)
 
 	this.equals = function(edge)
 	{
-		return type == edge.get_type() && to.equals(edge.get_to());// from.equals(edge.get_from());
+		return type == edge.get_type() && to.equals(edge.get_to());
 	};
 
 
@@ -78,10 +84,9 @@ let node = function(value)
 	// Add a this -> other edge.
 	this.connect = function(node, edge_type)
 	{
-		let new_edge = new edge(edge_type,/* this,*/ node);
+		let new_edge = new edge(edge_type, node);
 
-		edges.push(new_edge);//this.add_edge( new_edge );
-		//node.add_edge( new_edge );
+		edges.push(new_edge);
 	};
 
 
@@ -95,41 +100,14 @@ let node = function(value)
 			edge = edges[i];
 
 			if( edge.get_type() == edge_type &&
-			    /*edge.get_from().equals( this ) &&*/
 			    edge.get_to().equals( node ) )
 			{
 				// Remove the edge from our edge list.
 				edges.splice(i, 1);
-
-				// The [node] node still has an edge (incoming), remove it too.
-				//node.remove_edge( edge );
-
 				return;
 			}
 		}
 	};
-
-/*
-	this.add_edge = function(edge)
-	{
-		edges.push(edge);
-	};
-
-
-	this.remove_edge = function(edge)
-	{
-		let i;
-
-		for(i = 0; i < edges.length; i++)
-		{
-			if( edges[i].equals( edge ) )
-			{
-				edges.splice(i, 1);
-
-				return;
-			}
-		}
-	};*/
 
 
 	this.get_edges = function()

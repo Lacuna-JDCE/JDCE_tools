@@ -51,7 +51,6 @@ if( ! options['directory'] )
 }
 
 
-
 // Extend our default settings with the command line arguments (if available).
 let settings =
 {
@@ -61,7 +60,7 @@ let settings =
 	csvfile: 'output.csv',
 	graph: false,
 	graphfile: 'output.dot',
-	algorithm: ['static', 'dynamic']
+	algorithm: []
 }.extend(options);
 
 

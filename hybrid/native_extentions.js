@@ -28,7 +28,8 @@ Object.prototype.extend = function(other)
 
 	for (property in other)
 	{
-		if( other.hasOwnProperty(property) && other[property] != null )
+		if( other.hasOwnProperty(property) &&
+		    other[property] != null )
 		{
 			this[property] = other[property];
 		}
