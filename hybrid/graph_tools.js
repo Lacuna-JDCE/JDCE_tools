@@ -11,21 +11,19 @@ const Graph = require('./graph');
 
 
 
-const base_caller_node_name = '<base caller node>';
-
 // Create a 'caller' node, which simulates [the index.html / any js file] that calls a function directly.
 let base_caller_node = new Graph.Node(
 {
-	id: -1,
-	data: base_caller_node_name,
+	script_id: -1,
+	data: '<base caller node>',
 	equals: function(other)
 	{
 		// This is the only 'function' node with id -1.
-		return this.id == other.id;
+		return this.script_id == other.script_id;
 	},
 	toString: function()
 	{
-		return base_caller_node_name;
+		return '<base caller node>';
 	}
 });
 
@@ -42,13 +40,13 @@ function build_function_graph(scripts)
 		{
 			let value =
 			{
-				id: script.id,
+				script_id: script.id,
 				data: func,
 
 				equals: function(other)
 				{
 					// ID is per file/inline, start and end locations can't overlap in a single file.
-					return this.id == other.id && this.data.start == other.data.start && this.data.end == other.data.end;
+					return this.script_id == other.script_id && this.data.start == other.data.start && this.data.end == other.data.end;
 				},
 
 				toString: function()

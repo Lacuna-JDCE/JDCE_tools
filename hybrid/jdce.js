@@ -71,19 +71,22 @@ function get_script_by_id(script_data, id)
 }
 
 
-
 function remove_uncalled_functions(script_data, nodes)
 {
-console.log(script_data);
 	nodes.forEach(function(node)
 	{
 		let func = node.get_data(),
 		    script = get_script_by_id(script_data, func.id);
 
-		// TODO FIXME
+		remove_uncalled_function(func, script);
 	});
 }
 
+
+function remove_uncalled_function(func, script)
+{
+	console.log('remove function', func, 'from script', script);
+}
 
 
 module.exports =
@@ -121,7 +124,8 @@ module.exports =
 			directory: path.join('../', settings.directory),
 			html_path: path.join('../', settings.html_path),
 			scripts: scripts,
-			nodes: nodes
+			nodes: nodes,
+			base_node: GraphTools.get_base_caller_node(nodes)
 		};
 
 		// Run each algorithm in turn, letting it edit the graph (mark edges).
