@@ -29,7 +29,7 @@ let base_caller_node = new Graph.Node(
 
 
 
-function build_function_graph(scripts)
+function build_function_graph(scripts, constructed_edge_value)
 {
 	let nodes = [];
 
@@ -41,6 +41,7 @@ function build_function_graph(scripts)
 			let value =
 			{
 				script_id: script.id,
+				script_name: script.file,
 				data: func,
 
 				equals: function(other)
@@ -76,11 +77,11 @@ function build_function_graph(scripts)
 	for(i = 0; i < nodes.length; i++)
 	{
 		// Base caller -> this node.
-		base_caller_node.connect( nodes[i], Graph.EdgeType.CONSTRUCTED );
+		base_caller_node.connect( nodes[i], constructed_edge_value );
 
 		for(j = 0; j < nodes.length; j++)
 		{
-			nodes[i].connect(nodes[j], Graph.EdgeType.CONSTRUCTED);
+			nodes[i].connect(nodes[j], constructed_edge_value);
 		}
 	}
 
@@ -103,7 +104,24 @@ function get_base_caller_node(nodes)
 };
 
 
-function output_function_graph(nodes)
+function edge_name(value, fingerprints)
+{
+	let i,
+	    names = [];
+
+	for(i = 0; i < fingerprints.length; i++)
+	{
+		if(value & fingerprints[i].value)
+		{
+			names.push( fingerprints[i].name );
+		}
+	}
+
+	return names.join(', ');
+}
+
+
+function output_function_graph(nodes, fingerprints)
 {
 	let output = ['digraph functiongraph'];
 
@@ -116,7 +134,7 @@ function output_function_graph(nodes)
 		node.get_edges().forEach(function(edge)
 		{
 			count++;
-			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + Graph.edge_name(edge.get_type()) + '"];');
+			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + edge_name( edge.get_type(), fingerprints ) + '"];');
 		});
 
 		if(count == 0)
@@ -132,7 +150,7 @@ function output_function_graph(nodes)
 }
 
 
-function remove_constructed_edges(nodes)
+function remove_constructed_edges(nodes, constructed_edge_value)
 {
 	nodes.forEach(function(node)
 	{
@@ -147,7 +165,7 @@ function remove_constructed_edges(nodes)
 				let edge = edges[index];
 
 				// If the edge is of type CONSTRUCTED (thus not marked by any algorithm) remove it.
-				if( edge.get_type() == Graph.EdgeType.CONSTRUCTED )
+				if( edge.get_type() == constructed_edge_value )
 				{
 					node.disconnect( edge.get_to(), edge.get_type() );
 
@@ -156,7 +174,7 @@ function remove_constructed_edges(nodes)
 					index--;
 				}else{
 					// Remove the CONSTRUCTED type from this edge.
-					edge.remove_type( Graph.EdgeType.CONSTRUCTED );
+					edge.remove_type( constructed_edge_value );
 				}
 
 				// Consider next edge.
@@ -240,6 +258,44 @@ function get_disconnected_nodes(nodes)
 }
 
 
+function find_node(info, nodes)
+{
+	let i;
+
+	for(i = 0; i < nodes.length; i++)
+	{
+		let node = nodes[i];
+		let data = node.get_data();
+
+		if( data.script_name == info.file &&
+		    data.data.start == info.start &&
+		    data.data.end == info.end)
+		{
+			return node;
+		}
+	}
+
+	throw 'GraphTools exception: can\'t find node {file: ' + info.file + ', start: ' + info.start + ', end: ' + info.end + '}';
+}
+
+
+function mark(node_from, node_to, value)
+{
+	let i,
+	    edges = node_from.get_edges();
+
+	for(i = 0; i < edges.length; i++)
+	{
+		edge = edges[i];
+
+		if( edge.get_to().equals( node_to ) )
+		{
+			edge.add_type( value.value );
+		}
+	}
+}
+
+
 
 module.exports =
 {
@@ -247,5 +303,7 @@ module.exports =
 	output_function_graph: output_function_graph,
 	remove_constructed_edges: remove_constructed_edges,
 	get_disconnected_nodes: get_disconnected_nodes,
-	get_base_caller_node: get_base_caller_node
+	get_base_caller_node: get_base_caller_node,
+	find_node: find_node,
+	mark: mark
 };

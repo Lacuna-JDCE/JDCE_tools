@@ -20,6 +20,8 @@ module.exports = function(functions, settings, callback)
 			return;
 		}
 
+		settings.fingerprint = settings.fingerprints[i + 1];
+
 		functions[i](settings, loop);
 	}
  

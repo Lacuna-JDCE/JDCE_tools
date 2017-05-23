@@ -37,7 +37,7 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 | --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
 
 
-The following algorithms are available:
+The following algorithms are available by default:
 
 | Name         | Description                   |
 |--------------|-------------------------------|
@@ -60,4 +60,12 @@ Directory _foo_ with index file _app.html_, appending result data to _bar.csv_, 
 ```
 node hybrid.js foo --index app.html --csv --csvfile bar.csv --algorithm static dynamic
 ```
+
+
+
+## Extending
+You can add custom algorithms by writing an adapter.
+First, create a new adapter. For more information, see the [`example` adapter source](algorithms/example.js). This file should be placed in the `algorithms` folder. To maintain compatibility, any dependencies should be placed in a folder with the same name, e.g. for the algorithm `example`, place dependencies in `algorithms/example/`.
+Then, use the --algorithm flag to specify the new algorithm.
+
 

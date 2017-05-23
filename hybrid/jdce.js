@@ -15,6 +15,8 @@ const Graph = require('./graph'),
 
 
 
+const CONSTRUCTED_EDGE = {name: 'constructed', value: 0x01};
+
 
 function get_available_algorithms(folder)
 {
@@ -36,9 +38,14 @@ function get_available_algorithms(folder)
 }
 
 
-function get_algorithms(filter)
+function get_algorithm_data(filter)
 {
 	const folder = 'algorithms';
+
+	let fingerprints = [];
+	let id = CONSTRUCTED_EDGE.value;	// first value.
+
+	fingerprints.push(CONSTRUCTED_EDGE);
 
 	let algorithms = [],
 	    available_algorithms = get_available_algorithms(folder);
@@ -51,41 +58,31 @@ function get_algorithms(filter)
 			let algorithm = require(require_name);
 			let instance = new algorithm();
 
+			id *= 2;	// Flip the next higher bit (0001 -> 0010 -> 0100 -> 1000, etc.).
+			fingerprints.push({name: name, value: id});
+
 			algorithms.push( instance.run );
 		}
 	});
 
-	return algorithms;
+	return { functions: algorithms, fingerprints: fingerprints };
 }
 
 
-function get_script_by_id(script_data, id)
-{
-	for(let i = 0; i < script_data.length; i++)
-	{
-		if( script_data[i].id == id )
-		{
-			return script_data[i];
-		}
-	}
-}
-
-
-function remove_uncalled_functions(script_data, nodes)
+function remove_uncalled_functions(nodes)
 {
 	nodes.forEach(function(node)
 	{
-		let func = node.get_data(),
-		    script = get_script_by_id(script_data, func.id);
+		let func = node.get_data();
 
-		remove_uncalled_function(func, script);
+		remove_uncalled_function(func);
 	});
 }
 
 
-function remove_uncalled_function(func, script)
+function remove_uncalled_function(func)
 {
-	console.log('remove function', func, 'from script', script);
+	console.log('remove function', func.script_name, '@', func.data.start, '-', func.data.end);
 }
 
 
@@ -110,14 +107,15 @@ module.exports =
 		let scripts = webpage_tools.get_scripts( settings.html_path, settings.directory );
 
 		// Create a graph with each function as a node, plus the base caller node.
-		let nodes = GraphTools.build_function_graph(scripts);
+		// The default 
+		let nodes = GraphTools.build_function_graph(scripts, CONSTRUCTED_EDGE.value);
 
 		// The number of functions is the number of nodes in the graph, minus one for the base caller node.
 		stats.function_count = nodes.length - 1;
 
+		// Get a list of readily prepared algorithm functions (but only those in the settings.algorithm list) and their fingerprints.
+		let algorithms = get_algorithm_data(settings.algorithm);
 
-		// Get a list of readily prepared algorithm functions (but only those in the settings.algorithm list).
-		let algorithms = get_algorithms(settings.algorithm);
 		// Build the correct settings object for the algorithms.
 		let algorithm_settings =
 		{
@@ -125,19 +123,20 @@ module.exports =
 			html_path: path.join('../', settings.html_path),
 			scripts: scripts,
 			nodes: nodes,
-			base_node: GraphTools.get_base_caller_node(nodes)
+			base_node: GraphTools.get_base_caller_node(nodes),
+			fingerprints: algorithms.fingerprints
 		};
 
 		// Run each algorithm in turn, letting it edit the graph (mark edges).
-		async_loop(algorithms, algorithm_settings, function()
+		async_loop(algorithms.functions, algorithm_settings, function()
 		{
 			// Once we're done with all the algorithms, remove any edge that was constructed.
-			nodes = GraphTools.remove_constructed_edges(nodes);
+			nodes = GraphTools.remove_constructed_edges(nodes, CONSTRUCTED_EDGE.value);
 
 			let disconnected_nodes = GraphTools.get_disconnected_nodes(nodes);
 
 			// Do the actual work: remove all nodes that are disconnected (= functions without incoming edges = uncalled functions).
-			remove_uncalled_functions(scripts, disconnected_nodes);
+			remove_uncalled_functions(disconnected_nodes);
 
 			// The number of removed functions equals the number of nodes without any incoming edges (a disconnected node).
 			// The base caller node is never disconnected, so don't subtract from this.
@@ -154,7 +153,7 @@ module.exports =
 			stats.run_time = ((end_time[0] * 1e9 + end_time[1]) * 1e-6).toFixed(0);
 
 			// Return the graph image too.
-			stats.graph = GraphTools.output_function_graph(nodes);
+			stats.graph = GraphTools.output_function_graph(nodes, algorithms.fingerprints);
 
 			// Return statistics to caller.
 			callback( stats );

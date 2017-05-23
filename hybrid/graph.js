@@ -7,31 +7,10 @@
 
 
 
-let edge_types =
+let edge = function(_type, _to)
 {
-	CONSTRUCTED:	0x1,
-	DYNAMIC:		0x2,
-	STATIC:			0x4
-};
-
-
-let edge_names = function(type)
-{
-	let names = [];
-
-	if(type & edge_types.CONSTRUCTED)	names.push('constructed');
-	if(type & edge_types.DYNAMIC)		names.push('dynamic');
-	if(type & edge_types.STATIC)		names.push('static');
-
-	return names;
-};
-
-
-let edge = function(_type,/* _from,*/ _to)
-{
-	//let from = _from || null;
 	let to = _to || null;
-	let type = _type || 0x0;
+	let type = _type || 0x00;
 
 
 
@@ -73,7 +52,7 @@ let edge = function(_type,/* _from,*/ _to)
 
 	this.toString = this.valueOf = function()
 	{
-		return '--[' + edge_names(type).join(', ') + ']--> \'' + to + '\'';
+		return '--[' + type + ']--> \'' + to + '\'';
 	};
 };
 
@@ -147,10 +126,9 @@ let node = function(value)
 };
 
 
+
 module.exports =
 {
-	EdgeType: edge_types,
-	edge_name: edge_names,
 	Edge: edge,
 	Node: node
 };	

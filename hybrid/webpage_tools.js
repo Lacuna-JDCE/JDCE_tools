@@ -26,9 +26,10 @@ function is_valid_type(type)
 }
 
 
-function get_functions(source_code)
+function get_functions(entry)
 {
 	let functions = [];
+	let source_code = entry.source;
 
 	// Parse the source code, retrieve function nodes including range data.
 	esprima.parse(source_code, {range: true}, function(node)
@@ -58,6 +59,15 @@ function get_functions(source_code)
 			}else{
 				// If it's not a FunctionDeclaration, it must be a FunctionExpression.
 				function_data.type = 'expression';
+			}
+
+			// Special case: if inline js, add offset to location.
+			if(entry.type == 'inline')
+			{
+				function_data.start += entry.location.start;
+				function_data.end += entry.location.start;
+				function_data.body.start += entry.location.start;
+				function_data.body.end += entry.location.start;
 			}
 
 			// Save the function data.
@@ -94,13 +104,12 @@ let get_scripts = function(html_file, directory)
 		let entry =
 		{
 			id: id,				// id, for easier lookup.
-			type: null,			// 'inline', 'script' or 'module'
+			type: null,			// 'inline', 'script'
 			source: null,		// source code
 			file: null,			// file name of the script
 			functions: null,	// list of functions and location
 			// Optional:
 			location: null,		// if type is 'inline', the offset of the code in the HTML document ({start, end}).
-			origin: null		// if type is 'module', the importing script file.
 		};
 
 		if(!element.attribs.hasOwnProperty('src'))
@@ -132,12 +141,12 @@ let get_scripts = function(html_file, directory)
 
 			entry.type = 'script';
 			entry.source = file_system.readFileSync( parsed_path ).toString();
-			entry.file = parsed_path;
+			entry.file = src;
 		}
 
 		try
 		{
-			entry.functions = get_functions(entry.source);
+			entry.functions = get_functions(entry);
 		}catch(exception)
 		{
 			throw 'webpage_tools error: JS parse error: ' + exception;
@@ -160,6 +169,7 @@ let get_scripts = function(html_file, directory)
 		// FIXME for ES6 modules
 		// Parse the script, and see if there are any import statements, then insert them before [entry].
 		// Do so recursive, because one can import a module within a module.
+
 
 		// Add the script.
 		order.push(entry);
