@@ -63,9 +63,19 @@ node hybrid.js foo --index app.html --csv --csvfile bar.csv --algorithm static d
 
 
 
+## How does it work?
+Because no single analysis tool can ever be certain it found the complete call graph, we start out with a complete digraph (i.e. all nodes (functions) are connected).
+Each analysis tool ('algorithm') is allowed to mark edges. In the end, all unmarked edges are removed.
+
+![Example function graph](graph.png)
+
+
+
+
+
 ## Extending
 You can add custom algorithms by writing an adapter.
-First, create a new adapter. For more information, see the [`example` adapter source](algorithms/example.js). This file should be placed in the `algorithms` folder. To maintain compatibility, any dependencies should be placed in a folder with the same name, e.g. for the algorithm `example`, place dependencies in `algorithms/example/`.
+For more information, see the [`example` adapter source](algorithms/example.js). The adapter file should be placed in the `algorithms` folder. To prevent collisions, any dependencies should be placed in a folder with the same name, e.g. for the algorithm `example`, place dependencies in `algorithms/example/`.
 Then, use the --algorithm flag to specify the new algorithm.
 
 

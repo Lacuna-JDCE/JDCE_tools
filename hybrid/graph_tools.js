@@ -52,7 +52,8 @@ function build_function_graph(scripts, constructed_edge_value)
 
 				toString: function()
 				{
-					let name_parts = [script.file, '@', this.data.start, '-', this.data.end, ' ', this.data.type];
+					let name = script.type == 'inline' ? '<html>' : script.file;
+					let name_parts = [name, '@', this.data.start, '-', this.data.end, ' ', this.data.type];
 
 					if(this.data.type == 'declaration')
 					{
