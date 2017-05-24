@@ -181,7 +181,7 @@ function number_bits_set(i)
 }
 
 
-function output_function_graph(nodes, fingerprints, show_disconnected)
+function output_function_graph(nodes, fingerprints)
 {
 	let output = ['digraph functiongraph'];
 
@@ -217,12 +217,11 @@ function output_function_graph(nodes, fingerprints, show_disconnected)
 			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + name + '" color="' + color + '"];');
 		});
 
-		if(count == 0 && show_disconnected)
+		if(count == 0)
 		{
 			// Disconnected node
 			output.push('\t"' + node.get_data() + '"');
 		}
-
 	});
 
 	output.push('}');
@@ -314,13 +313,21 @@ function traverse_graph(node, done)
 }
 
 
-function get_disconnected_nodes(nodes)
+function get_connected_nodes(nodes)
 {
-	let disconnected_nodes = [],
-	    base = get_base_caller_node(nodes);
+	let base = get_base_caller_node(nodes);
 
 	// Traverse the graph, starting from base.
 	let connected_nodes = traverse_graph( base );
+
+	return connected_nodes;
+}
+
+
+function get_disconnected_nodes(nodes)
+{
+	let disconnected_nodes = [],
+	    connected_nodes = get_connected_nodes(nodes);
 
 	nodes.forEach(function(node)
 	{
@@ -384,6 +391,7 @@ module.exports =
 	output_function_graph: output_function_graph,
 	remove_constructed_edges: remove_constructed_edges,
 	get_disconnected_nodes: get_disconnected_nodes,
+	get_connected_nodes: get_connected_nodes,
 	get_base_caller_node: get_base_caller_node,
 	find_node: find_node,
 	mark: mark

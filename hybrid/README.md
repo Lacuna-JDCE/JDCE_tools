@@ -54,7 +54,7 @@ The csv file has the following columns:
 directory name, JS files processed, # functions, # functions removed, run time (in ms), error messages
 ```
 
-The graph file is outputted in DOT format, which you can visualize e.g. [here](http://www.webgraphviz.com/).
+The graph file is outputted in DOT format, which you can visualize online [here](http://www.webgraphviz.com/) or on the command line with `dot` (e.g. `dot -Tpng output.dot -o output.png`).
 
 
 

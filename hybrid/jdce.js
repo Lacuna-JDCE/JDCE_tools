@@ -231,6 +231,15 @@ module.exports =
 			// The base caller node is never disconnected, so don't subtract from this.
 			stats.functions_removed = disconnected_nodes.length;
 
+			// Return the graph image too.
+			if(settings.show_disconnected)
+			{
+				stats.graph = GraphTools.output_function_graph(nodes, algorithms.fingerprints);
+			}else{
+				// Only show reachable nodes.
+				stats.graph = GraphTools.output_function_graph(GraphTools.get_connected_nodes(nodes), algorithms.fingerprints);
+			}
+
 			return_results();
 		});
 
@@ -240,9 +249,6 @@ module.exports =
 			// Calculate run time and save it in the stats object.
 			let end_time = process.hrtime(start_time);
 			stats.run_time = ((end_time[0] * 1e9 + end_time[1]) * 1e-6).toFixed(0);
-
-			// Return the graph image too.
-			stats.graph = GraphTools.output_function_graph(nodes, algorithms.fingerprints, settings.show_disconnected);
 
 			// Return statistics to caller.
 			callback( stats );

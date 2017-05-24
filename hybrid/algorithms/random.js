@@ -12,15 +12,19 @@ const path = require('path'),
 
 
 
-const CONNECT_CHANCE = 0.3,			// Chance (for each node) a node connects to another _random_ node.
-      CONNECT_BASE_CHANCE = 0.1;	// Chance the base node connects to a node.
-
-
-
 module.exports = function()
 {
 	this.run = function(settings, callback)
 	{
+		// To how many functions is each function possibly connected?
+		const NUM_FUNCTIONS = 3;
+		// Chance (for each node) a node connects to (NUM_FUNCTIONS times) another _random_ node.
+		const CONNECT_CHANCE = 0.3;
+		// Chance the base node connects to a node (for each node).
+		const CONNECT_BASE_CHANCE = 0.01;
+
+		// The amount of nodes each node connects to is, on average, (NUM_FUNCTIONS * CONNECT_CHANCE).
+
 		function random_node()
 		{
 			let index = Math.floor(Math.random() * settings.nodes.length);
@@ -30,10 +34,13 @@ module.exports = function()
 
 		settings.nodes.forEach(function(node)
 		{
-			// Connect to another random node (not base caller node).
-			if( Math.random() < CONNECT_CHANCE )
+			// Connect to three random nodes (not base caller node).
+			for(let i = 0; i < NUM_FUNCTIONS; i++)
 			{
-				GraphTools.mark( node, random_node(), settings.fingerprint );
+				if( Math.random() < CONNECT_CHANCE )
+				{
+					GraphTools.mark( node, random_node(), settings.fingerprint );
+				}
 			}
 
 			// Connect base caller node to this node.
