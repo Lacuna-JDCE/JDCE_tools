@@ -37,7 +37,9 @@ try
 
 		{ name: 'algorithm', type: String, multiple: true, alias: 'a' },
 
-		{ name: 'noremove', type: Boolean, alias: 'n' }
+		{ name: 'noremove', type: Boolean, alias: 'n' },
+
+		{ name: 'entire', type: Boolean, alias: 'e' }
 	]);
 }catch(exception)
 {
@@ -63,7 +65,8 @@ let settings =
 	graph: false,
 	graphfile: 'output.dot',
 	algorithm: [],
-	noremove: false
+	noremove: false,
+	entire: false
 }.extend(options);
 
 
@@ -119,7 +122,8 @@ try
 		directory: settings.directory,
 		html_path: settings.html_path,
 		algorithm: settings.algorithm,
-		noremove: settings.noremove
+		noremove: settings.noremove,
+		show_disconnected: settings.entire
 	}, function(results)
 	{
 		// If the CSV option was set, output result data to the csv file (see 'csv' above).
@@ -136,7 +140,9 @@ try
 
 		if( settings.verbose )
 		{
+			// Don't show graph DOT string in output
 			delete results.graph;
+
 			console.log(results);
 		}
 	});

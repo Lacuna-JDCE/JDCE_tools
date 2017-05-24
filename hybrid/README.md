@@ -36,6 +36,7 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 | --graphfile  | -d    | Specify graph (DOT) output location (only with --graph) | output.dot          |
 | --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
 | --noremove   | -n    | Don't remove uncalled nodes                             |                     |
+| --entire     | -e    | Output disconnected nodes in graph (only with --graph)  |                     |
 
 
 The following algorithms are available by default:

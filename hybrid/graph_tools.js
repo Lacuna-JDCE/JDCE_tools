@@ -182,7 +182,7 @@ function number_bits_set(i)
 }
 
 
-function output_function_graph(nodes, fingerprints)
+function output_function_graph(nodes, fingerprints, show_disconnected)
 {
 	let output = ['digraph functiongraph'];
 
@@ -218,11 +218,12 @@ function output_function_graph(nodes, fingerprints)
 			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + name + '" color="' + color + '"];');
 		});
 
-		if(count == 0)
+		if(count == 0 && show_disconnected)
 		{
 			// Disconnected node
 			output.push('\t"' + node.get_data() + '"');
 		}
+
 	});
 
 	output.push('}');

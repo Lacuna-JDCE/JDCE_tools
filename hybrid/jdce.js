@@ -6,6 +6,7 @@
 'use strict';
 
 
+require('./native_extentions');
 const Graph = require('./graph'),
       GraphTools = require('./graph_tools'),
       file_system = require('fs'),
@@ -71,21 +72,103 @@ function get_algorithm_data(filter)
 }
 
 
-function remove_uncalled_functions(nodes)
+function remove_uncalled_functions(nodes, directory, html_file)
 {
+	// Create a map of files and the functions that need to be removed in that file.
+	let file, files = {};
+
 	nodes.forEach(function(node)
 	{
-		let func = node.get_data();
+		let file,
+		    func = node.get_data();
 
-		remove_uncalled_function(func);
+		// Fix null -> html file name.
+		if(func.script_name == null)
+		{
+			file = html_file;
+		}else{
+			file = path.join(directory, func.script_name);
+		}
+
+		if( ! files[file] )
+		{
+			files[file] = [];
+		}
+
+		files[file].push( func.data );
 	});
+
+	for(file in files)
+	{
+		if( files.hasOwnProperty(file) )
+		{
+			remove_functions_from_file(file, files[file]);
+		}
+	}
 }
 
 
-function remove_uncalled_function(func)
+function remove_functions_from_file(file_name, functions)
 {
-	console.log('remove function', func.script_name, '@', func.data.start, '-', func.data.end);
+	// Retrieve the source.
+	let source_code = file_system.readFileSync(file_name).toString();
+
+	// Remove nested functions. If a function is nested within another function, it will get removed by the parents' removal.
+	functions = remove_nested_functions(functions);
+
+	// Sort all functions based on start/end location. If we don't, removing with an offset won't work.
+	functions = functions.sort(function(a, b)
+	{
+		return a.start - b.start;
+	});
+
+	// Keep track of how much we removed, as it changes the start position of subsequent functions.
+	let offset = 0;
+
+	functions.forEach(function(func)
+	{
+		// If the function type is an expression, replace it with an empty function, otherwise (i.e. function declaration) remove it completely.
+		let insert = func.type == 'expression' ? 'function(){}' : ('function ' + func.name + '(){}');
+
+		// Remove source code from the starting position (minus offset, i.e. the length of code we removed already), length of the function is still end - start.
+		source_code = source_code.splice(func.start - offset, func.end - func.start, insert);
+
+		// Increment offset with what we removed.
+		offset += func.end - func.start;
+		// Decrement offset with what we added (insert)
+		offset -= insert.length;
+	});
+
+	// Now, write the new source to the file.
+	file_system.writeFileSync(file_name, source_code);
 }
+
+
+function remove_nested_functions(functions)
+{
+	let reduced = [];
+
+	functions.forEach(function(func)
+	{
+		let nested = false;
+
+		functions.forEach(function(test)
+		{
+			if(func.start > test.start && func.end < test.end)
+			{
+				nested = true;
+			}
+		});
+
+		if(nested == false)
+		{
+			reduced.push( func );
+		}
+	});
+
+	return reduced;
+}
+
 
 
 module.exports =
@@ -141,7 +224,7 @@ module.exports =
 			let disconnected_nodes = GraphTools.get_disconnected_nodes(nodes);
 
 			// Do the actual work: remove all nodes that are disconnected (= functions without incoming edges = uncalled functions).
-			remove_uncalled_functions(disconnected_nodes);
+			remove_uncalled_functions(disconnected_nodes, settings.directory, settings.html_path);
 
 			// The number of removed functions equals the number of nodes without any incoming edges (a disconnected node).
 			// The base caller node is never disconnected, so don't subtract from this.
@@ -158,7 +241,7 @@ module.exports =
 			stats.run_time = ((end_time[0] * 1e9 + end_time[1]) * 1e-6).toFixed(0);
 
 			// Return the graph image too.
-			stats.graph = GraphTools.output_function_graph(nodes, algorithms.fingerprints);
+			stats.graph = GraphTools.output_function_graph(nodes, algorithms.fingerprints, settings.show_disconnected);
 
 			// Return statistics to caller.
 			callback( stats );
