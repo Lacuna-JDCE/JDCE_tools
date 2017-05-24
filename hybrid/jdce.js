@@ -131,7 +131,10 @@ module.exports =
 		async_loop(algorithms.functions, algorithm_settings, function()
 		{
 			// Once we're done with all the algorithms, remove any edge that was constructed.
-			nodes = GraphTools.remove_constructed_edges(nodes, CONSTRUCTED_EDGE.value);
+			if(!settings.noremove)
+			{
+				nodes = GraphTools.remove_constructed_edges(nodes, CONSTRUCTED_EDGE.value);
+			}
 
 			let disconnected_nodes = GraphTools.get_disconnected_nodes(nodes);
 

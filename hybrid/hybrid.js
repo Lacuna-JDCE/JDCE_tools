@@ -35,7 +35,9 @@ try
 
 		{ name: 'verbose', type: Boolean, alias: 'v' },
 
-		{ name: 'algorithm', type: String, multiple: true, alias: 'a' }
+		{ name: 'algorithm', type: String, multiple: true, alias: 'a' },
+
+		{ name: 'noremove', type: Boolean, alias: 'n' }
 	]);
 }catch(exception)
 {
@@ -60,7 +62,8 @@ let settings =
 	csvfile: 'output.csv',
 	graph: false,
 	graphfile: 'output.dot',
-	algorithm: []
+	algorithm: [],
+	noremove: false
 }.extend(options);
 
 
@@ -115,7 +118,8 @@ try
 	jdce.run({
 		directory: settings.directory,
 		html_path: settings.html_path,
-		algorithm: settings.algorithm
+		algorithm: settings.algorithm,
+		noremove: settings.noremove
 	}, function(results)
 	{
 		// If the CSV option was set, output result data to the csv file (see 'csv' above).
@@ -132,6 +136,7 @@ try
 
 		if( settings.verbose )
 		{
+			delete results.graph;
 			console.log(results);
 		}
 	});

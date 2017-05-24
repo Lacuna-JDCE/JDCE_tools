@@ -122,6 +122,66 @@ function edge_name(value, fingerprints)
 }
 
 
+function get_percentage_color(count, max)
+{
+	// Adapted from https://stackoverflow.com/questions/7128675/from-green-to-red-color-depend-on-percentage/7128796#7128796
+
+	let color_bands =
+	[
+		{ percent: 0.0, color: { red: 0xff, green: 0x00, blue: 0x00 } },
+		{ percent: 0.5, color: { red: 0xff, green: 0xff, blue: 0x00 } },
+		{ percent: 1.0, color: { red: 0x00, green: 0xff, blue: 0x00 } }
+	];
+
+	let color_index = 0,
+	    percent = count / max;
+
+	for(let i = 1; i <= color_bands.length - 1; i++)
+	{
+		if(percent <= color_bands[i].percent)
+		{
+			color_index = i;
+			break;
+		}
+	}
+
+	let lower = color_bands[color_index - 1],
+	    upper = color_bands[color_index];
+
+	let range = upper.percent - lower.percent,
+	    range_percent = (percent - lower.percent) / range;
+
+	let percent_lower = 1 - range_percent,
+	    percent_upper = range_percent;
+
+	let color =
+	{
+		red:	Math.floor(lower.color.red * percent_lower + upper.color.red * percent_upper),
+		green:	Math.floor(lower.color.green * percent_lower + upper.color.green * percent_upper),
+		blue:	Math.floor(lower.color.blue * percent_lower + upper.color.blue * percent_upper)
+	};
+
+	let hex =
+	[
+		('0' + color.red.toString(16)).slice(-2),
+		('0' + color.green.toString(16)).slice(-2),
+		('0' + color.blue.toString(16)).slice(-2)
+	];
+
+	return '#' + hex.join('');
+}
+
+
+function number_bits_set(i)
+{
+	// Adapted from https://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer/109025#109025
+
+	i = i - ((i >> 1) & 0x55555555);
+	i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+	return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+}
+
+
 function output_function_graph(nodes, fingerprints)
 {
 	let output = ['digraph functiongraph'];
@@ -135,7 +195,15 @@ function output_function_graph(nodes, fingerprints)
 		node.get_edges().forEach(function(edge)
 		{
 			count++;
-			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + edge_name( edge.get_type(), fingerprints ) + '"];');
+
+			let name = edge_name( edge.get_type(), fingerprints );
+
+			let max = fingerprints.length,
+			    bits_set = number_bits_set(edge.get_type());
+
+			let color = get_percentage_color( bits_set, max);
+
+			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + name + '" color="' + color + '"];');
 		});
 
 		if(count == 0)
