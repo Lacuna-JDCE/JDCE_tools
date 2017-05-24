@@ -106,7 +106,7 @@ let get_scripts = function(html_file, directory)
 			id: id,				// id, for easier lookup.
 			type: null,			// 'inline', 'script'
 			source: null,		// source code
-			file: null,			// file name of the script
+			file: null,			// file name of the script (or HTML file name).
 			functions: null,	// list of functions and location
 			// Optional:
 			location: null,		// if type is 'inline', the offset of the code in the HTML document ({start, end}).
@@ -124,6 +124,8 @@ let get_scripts = function(html_file, directory)
 			}
 
 			entry.type = 'inline';
+
+			entry.file = path.basename(html_file);
 			entry.location = {start: start, end: start + content.length};
 			entry.source = content;
 		}else{

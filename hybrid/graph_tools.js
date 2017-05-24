@@ -14,12 +14,12 @@ const Graph = require('./graph');
 // Create a 'caller' node, which simulates [the index.html / any js file] that calls a function directly.
 let base_caller_node = new Graph.Node(
 {
-	script_id: -1,
+	script_name: '<base caller node>',
 	data: '<base caller node>',
 	equals: function(other)
 	{
 		// This is the only 'function' node with id -1.
-		return this.script_id == other.script_id;
+		return this.script_name == other.script_name;
 	},
 	toString: function()
 	{
@@ -40,19 +40,18 @@ function build_function_graph(scripts, constructed_edge_value)
 		{
 			let value =
 			{
-				script_id: script.id,
 				script_name: script.file,
 				data: func,
 
 				equals: function(other)
 				{
 					// ID is per file/inline, start and end locations can't overlap in a single file.
-					return this.script_id == other.script_id && this.data.start == other.data.start && this.data.end == other.data.end;
+					return this.script_name == other.script_name && this.data.start == other.data.start && this.data.end == other.data.end;
 				},
 
 				toString: function()
 				{
-					let name = script.type == 'inline' ? '<html>' : script.file;
+					let name = script.file;
 					let name_parts = [name, '@', this.data.start, '-', this.data.end, ' ', this.data.type];
 
 					if(this.data.type == 'declaration')

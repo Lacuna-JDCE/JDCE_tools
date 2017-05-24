@@ -206,6 +206,7 @@ module.exports =
 		{
 			directory: path.join('../', settings.directory),
 			html_path: path.join('../', settings.html_path),
+			html_file: path.basename( settings.html_path),
 			scripts: scripts,
 			nodes: nodes,
 			base_node: GraphTools.get_base_caller_node(nodes),

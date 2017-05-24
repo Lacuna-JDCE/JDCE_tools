@@ -34,12 +34,13 @@ module.exports = function()
 		// Now that we have the information we need, we can start marking the graph.
 		// We can retrieve nodes based on the file name (relative to the [settings.html_path]) and start/end location, e.g.
 		/*
-			let node_one = GraphTools.find_node({file: 'foo.js', start: 0, end: 42}, nodes),		// Retrieve the node representing the function in file 'foo.js', from pos 0 to 42.
-				node_two = GraphTools.find_node({file: 'bar.js', start: 123, end: 492}, nodes);		// Retrieve another node.
+			let node_one = GraphTools.find_node({file: 'foo.js', start: 0, end: 42}, nodes),			// Retrieve the node representing the function in file 'foo.js', from pos 0 to 42.
+				node_two = GraphTools.find_node({file: 'folder/bar.js', start: 123, end: 492}, nodes);	// Retrieve another node.
 		*/
-		// Any function in the HTML file itself (i.e. inline) has 'null' as file name:
+		// Any function in the HTML file itself (i.e. inline JS) has the html file as as file name.
+		// For easy access, it's in in [settings.html_file]:
 		/*
-			let node_inline = GraphTools.find_node({file: null, start: 20, end: 40}, nodes);
+			let node_inline = GraphTools.find_node({file: settings.html_file, start: 20, end: 40}, nodes);	// script in [html_file] from character position 20 to 40.
 		*/
 		// To mark an edge, simply run the mark function from GraphTools.
 		// Provide the caller node, the node that it calls, and our fingerprint (found in [settings.fingerprint]).
@@ -56,6 +57,7 @@ module.exports = function()
 
 
 		// When we're completely done, call the callback function to return.
+		// If you're running something async, call the callback from that callback function.
 		callback();
 	};
 };
@@ -65,7 +67,7 @@ module.exports = function()
 
 
 /*
-	This is an example settings object, passed to the 'run' method of each adapter. The values are examples.
+	This is an example settings object, passed to the 'run' method of each adapter. These values are examples.
 
 
 
@@ -73,22 +75,22 @@ module.exports = function()
 	{
 		directory: '../path/to/folder/',				// The directory of the webpage we're analyzing
 		html_path: '../path/to/folder/index.html',		// The HTML file
+		html_file: 'index.html',
 
 		scripts: [script_data, script_data, ...],		// An array of scripts in the HTML file. They are ordered based on load order. See below for contents.
 
 		base_node: Node,								// The base caller node. It represents calls to nodes (functions) from the global scope.
 		nodes: [Node, Node, ...],						// A list of nodes in the graph.
-		fingerprint: {name: 'example', value: 8}		// The fingerprint for this algorithm. Use it when marking edges.
+		fingerprint										// The fingerprint for this algorithm. Use it when marking edges.
 	}
 
 
 	script_data:
 	{
-		type: 'script',						// 'script' for included .js file, 'inline' for JS inside the HTML document.
+		type: 'script',						// 'script' for included .js files, 'inline' for JS inside the HTML document.
 		source: '...',						// Plain text source of this script.
-		file: 'foo.js',						// The location of the script, relative to the HTML file.
+		file: 'foo.js',						// The location of the script, relative to the HTML file. Scripts in the HTML file use the name of the HTML file itself, e.g. 'index.html'.
 		functions: [func, func, func],		// An array of functions within this file. See below for contents.
-		location: null,						// If type is 'inline', the offset of the code in the HTML document ({start, end}).
 	}
 
 
