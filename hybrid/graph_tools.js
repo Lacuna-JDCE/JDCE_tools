@@ -201,6 +201,18 @@ function output_function_graph(nodes, fingerprints)
 			let max = fingerprints.length,
 			    bits_set = number_bits_set(edge.get_type());
 
+			// To get the correct colors, subtract from max and bits_set in some cases.
+			if(max > 1)
+			{
+				// Remove one from max (the constructed edges) if it's not the only edge (don't want /0 errors).
+				max -= 1;
+			}
+			if(edge.get_type() & 0x01)
+			{
+				// Remove one from the bits set, the constructed edge, if it's set.
+				bits_set -= 1;
+			}
+
 			let color = get_percentage_color( bits_set, max);
 
 			output.push('\t"' + node.get_data() + '" -> "' + edge.get_to().get_data() + '" [label="' + name + '" color="' + color + '"];');

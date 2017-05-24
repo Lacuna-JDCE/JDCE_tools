@@ -62,6 +62,8 @@ function get_algorithm_data(filter)
 			fingerprints.push({name: name, value: id});
 
 			algorithms.push( instance.run );
+		}else{
+			console.log('Note: algorithm \'' + name + '\' not found in algorithms/');
 		}
 	});
 
