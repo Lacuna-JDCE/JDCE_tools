@@ -8,8 +8,8 @@ This Node.js script analyses a web application within a directory and removes un
 
 
 ## Prerequisites
-Requires a directory with a main HTML file. This file should have a _head_ tag.
-Also assumes all JavaScript code is valid (i.e. no parse errors).
+Assumes all JavaScript code in the directory it is run upon is valid (i.e. no parse errors).
+Algorithms might have other requirements, as indicated below.
 
 
 
@@ -41,10 +41,11 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 
 The following algorithms are available by default:
 
-| Name         | Description                   |
-|--------------|-------------------------------|
-| static       | Static analysis               |
-| dynamic      | Dynamic analysis              |
+| Name         | Description                   | Additional requirements       |
+|--------------|-------------------------------|-------------------------------|
+| static       | Static analysis               |                               |
+| dynamic      | Dynamic analysis              | Valid <head> tag in HTML      |
+
 
 
 
@@ -77,7 +78,8 @@ Each analysis tool ('algorithm') is allowed to mark edges. In the end, all unmar
 
 ## Extending
 You can add custom algorithms by writing an adapter.
-For more information, see the [`example` adapter source](algorithms/example.js). The adapter file should be placed in the `algorithms` folder. To prevent collisions, any dependencies should be placed in a folder with the same name, e.g. for the algorithm `example`, place dependencies in `algorithms/example/`.
+For more information, see the [`example` adapter source](algorithms/example.js). The adapter file should be placed in the `algorithms` folder.
+To prevent collisions, any dependencies should be placed in a folder with the same name, e.g. for the algorithm `example`, place dependencies in `algorithms/example/`.
 Then, use the --algorithm flag to specify the new algorithm.
 
-
+Algorithms should only mark edges (with the provided `find_node` and `mark` functions), and not modify the files or nodes (graph) in any other way.
