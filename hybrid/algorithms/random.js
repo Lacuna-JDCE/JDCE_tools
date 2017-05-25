@@ -6,8 +6,7 @@
 */
 
 
-const path = require('path'),
-      Graph = require('../graph'),
+const Graph = require('../graph'),
       GraphTools = require('../graph_tools');
 
 
