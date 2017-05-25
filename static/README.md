@@ -13,6 +13,12 @@ Also assumes all JS files are valid (i.e. no parse errors).
 
 
 
+## Installing
+```
+git submodule update
+```
+
+
 
 ## Running
 ```
