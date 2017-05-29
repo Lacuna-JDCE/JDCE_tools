@@ -118,6 +118,12 @@ if( ! file_system.existsSync(settings.html_path) )
 }
 
 
+if( settings.algorithm.length == 0 )
+{
+	console.log('Warning: no algorithms specified. No functions will be removed. Use the --algorithm command line option to specify the algorithms to use.');
+}
+
+
 try
 {
 	// Run the JDCE.
