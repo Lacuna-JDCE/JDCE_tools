@@ -210,7 +210,8 @@ module.exports =
 			scripts: scripts,
 			nodes: nodes,
 			base_node: GraphTools.get_base_caller_node(nodes),
-			fingerprints: algorithms.fingerprints
+			fingerprints: algorithms.fingerprints,
+			timeout: settings.timeout
 		};
 
 		// Run each algorithm in turn, letting it edit the graph (mark edges).

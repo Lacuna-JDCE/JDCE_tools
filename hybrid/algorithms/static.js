@@ -1,14 +1,13 @@
 /*
 	static
-	Static algorithm for the 'hybrid' JDCE tool.
+	Static analysis algorithm for the 'hybrid' JDCE tool.
 
-	Statically analyze the source, then return a map of files with each value an array with functions to remove.
+	Statically analyze the source, then returns a list of functions to remove.
 	Static analysis tool copied & adapted from https://github.com/abort/javascript-call-graph
 */
 
 
-const path = require('path'),
-      Graph = require('../graph'),
+const Graph = require('../graph'),
       GraphTools = require('../graph_tools'),
       static_analyzer = require('./static/static');
 

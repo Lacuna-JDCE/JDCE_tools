@@ -82,6 +82,7 @@ module.exports = function()
 		base_node: Node,								// The base caller node. It represents calls to nodes (functions) from the global scope.
 		nodes: [Node, Node, ...],						// A list of nodes in the graph.
 		fingerprint										// The fingerprint for this algorithm. Use it when marking edges.
+		timeout: 5000									// A timeout request (stop running & return after this many milliseconds).
 	}
 
 

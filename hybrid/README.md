@@ -17,6 +17,7 @@ Algorithms might have other requirements, as indicated below.
 ```
 npm install
 ```
+The dynamic and static analysis tools also require several node modules, so run `npm install` in the `algorithms/static/` and `algorithms/dynamic/` directories too.
 
 
 
@@ -35,8 +36,10 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 | --graph      | -g    | Enable function graph output.                           |                     |
 | --graphfile  | -d    | Specify graph (DOT) output location (only with --graph) | output.dot          |
 | --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
-| --noremove   | -n    | Don't remove uncalled nodes                             |                     |
-| --entire     | -e    | Output disconnected nodes in graph (only with --graph)  |                     |
+| --noremove   | -n    | Don't remove uncalled nodes.                            |                     |
+| --entire     | -e    | Output disconnected nodes in graph (only with --graph). |                     |
+| --timeout    | -t    | Pass a timeout value to algorithms (not enforced).      | 5000                |
+
 
 
 The following algorithms are available by default:
@@ -45,6 +48,7 @@ The following algorithms are available by default:
 |--------------|-------------------------------|-------------------------------|
 | static       | Static analysis               |                               |
 | dynamic      | Dynamic analysis              | Valid <head> tag in HTML      |
+| random       | Keeps random functions        |                               |
 
 
 

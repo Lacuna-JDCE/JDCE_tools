@@ -39,7 +39,9 @@ try
 
 		{ name: 'noremove', type: Boolean, alias: 'n' },
 
-		{ name: 'entire', type: Boolean, alias: 'e' }
+		{ name: 'entire', type: Boolean, alias: 'e' },
+
+		{ name: 'timeout', type: Number, alias: 't' }
 	]);
 }catch(exception)
 {
@@ -66,7 +68,8 @@ let settings =
 	graphfile: 'output.dot',
 	algorithm: [],
 	noremove: false,
-	entire: false
+	entire: false,
+	timeout: 5000
 }.extend(options);
 
 
@@ -123,7 +126,8 @@ try
 		html_path: settings.html_path,
 		algorithm: settings.algorithm,
 		noremove: settings.noremove,
-		show_disconnected: settings.entire
+		show_disconnected: settings.entire,
+		timeout: settings.timeout
 	}, function(results)
 	{
 		// If the CSV option was set, output result data to the csv file (see 'csv' above).
