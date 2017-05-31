@@ -204,8 +204,8 @@ module.exports =
 		// Build the correct settings object for the algorithms.
 		let algorithm_settings =
 		{
-			directory: path.join('../', settings.directory),
-			html_path: path.join('../', settings.html_path),
+			directory: settings.directory,
+			html_path: settings.html_path,
 			html_file: path.basename( settings.html_path),
 			scripts: scripts,
 			nodes: nodes,

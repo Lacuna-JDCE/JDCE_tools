@@ -73,8 +73,8 @@ module.exports = function()
 
 	settings:
 	{
-		directory: '../path/to/folder/',				// The directory of the webpage we're analyzing
-		html_path: '../path/to/folder/index.html',		// The HTML file
+		directory: 'path/to/folder/',					// The directory of the webpage we're analyzing
+		html_path: 'path/to/folder/index.html',			// The HTML file
 		html_file: 'index.html',
 
 		scripts: [script_data, script_data, ...],		// An array of scripts in the HTML file. They are ordered based on load order. See below for contents.
@@ -89,7 +89,7 @@ module.exports = function()
 	script_data:
 	{
 		type: 'script',						// 'script' for included .js files, 'inline' for JS inside the HTML document.
-		source: '...',						// Plain text source of this script.
+		source: '<js source code>',			// Plain text source of this script.
 		file: 'foo.js',						// The location of the script, relative to the HTML file. Scripts in the HTML file use the name of the HTML file itself, e.g. 'index.html'.
 		functions: [func, func, func],		// An array of functions within this file. See below for contents.
 	}
