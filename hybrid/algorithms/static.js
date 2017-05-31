@@ -17,7 +17,7 @@ module.exports = function()
 {
 	this.run = function(settings, callback)
 	{
-		let called_functions = static_analyzer(settings.scripts);
+		let called_functions = static_analyzer(settings.scripts, settings.html_file);
 
 		// For each function
 		called_functions.forEach(function(funcs)
