@@ -16,8 +16,9 @@ Algorithms might have other requirements, as indicated below.
 ## Installing
 ```
 npm install
+npm --prefix ./algorithms/static install ./algorithms/static
+npm --prefix ./algorithms/dynamic install ./algorithms/dynamic
 ```
-The dynamic and static analysis tools also require several node modules, so run `npm install` in the `algorithms/static/` and `algorithms/dynamic/` directories too.
 
 
 
