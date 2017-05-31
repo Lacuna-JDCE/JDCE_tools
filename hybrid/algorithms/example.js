@@ -42,6 +42,8 @@ module.exports = function()
 		/*
 			let node_inline = GraphTools.find_node({file: settings.html_file, start: 20, end: 40}, nodes);	// script in [html_file] from character position 20 to 40.
 		*/
+		// Note that the 'inline' type scripts positions are relative to that <script> tag, not the start of the HTML file (see script_data.location, below).
+
 		// To mark an edge, simply run the mark function from GraphTools.
 		// Provide the caller node, the node that it calls, and our fingerprint (found in [settings.fingerprint]).
 		/*
@@ -88,10 +90,15 @@ module.exports = function()
 
 	script_data:
 	{
-		type: 'script',						// 'script' for included .js files, 'inline' for JS inside the HTML document.
-		source: '<js source code>',			// Plain text source of this script.
-		file: 'foo.js',						// The location of the script, relative to the HTML file. Scripts in the HTML file use the name of the HTML file itself, e.g. 'index.html'.
-		functions: [func, func, func],		// An array of functions within this file. See below for contents.
+		id: 0,										// Unique ID.
+		type: 'script',								// 'script' for included .js files, 'inline' for JS inside the HTML document.
+		source: '<js source code>',					// Plain text source of this script.
+		file: 'foo.js',								// The location of the script, relative to the HTML file. Scripts in the HTML file use the name of the HTML file itself, e.g. 'index.html'.
+		full_path: 'folder/foo.js',					// The full path of the script, useful for e.g. readFile.
+		file_indexed: 'index.html#3',				// same as file, except in the case of the HTML file, with an # and the script ID appended.
+		full_path_indexed: 'folder/index.html#4',	// As file_indexed, but for full_path.
+		functions: [func, func, func],				// An array of functions within this file. See below for contents.
+		location: {start, end}						// If type is 'inline', the offset to the start/end of the HTML document.
 	}
 
 

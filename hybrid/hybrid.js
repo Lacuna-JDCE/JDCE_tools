@@ -74,7 +74,7 @@ let settings =
 
 
 // Add the complete HTML file path to the settings for easy access.
-settings.html_path = path.normalize(settings.directory + '/' + settings.index);
+settings.html_path = path.join(settings.directory, settings.index);
 
 
 // Create a CSV output instance.

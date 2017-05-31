@@ -126,12 +126,16 @@ let get_scripts = function(html_file, directory)
 			entry.type = 'inline';
 
 			entry.file = path.basename(html_file);
+			entry.full_path = html_file;
 			entry.location = {start: start, end: start + content.length};
 			entry.source = content;
+
+			entry.file_indexed = entry.file + '#' + id;
+			entry.full_path_indexed = entry.full_path + '#' + id;
 		}else{
 			// External script.
 			let src = element.attribs['src'];
-			let parsed_path = path.normalize( directory + '/' + src );
+			let parsed_path = path.join( directory, src );
 
 			if( sources.indexOf(parsed_path) > -1 )
 			{
@@ -144,6 +148,10 @@ let get_scripts = function(html_file, directory)
 			entry.type = 'script';
 			entry.source = file_system.readFileSync( parsed_path ).toString();
 			entry.file = src;
+			entry.full_path = parsed_path;
+
+			entry.file_indexed = entry.file;
+			entry.full_path_indexed = entry.full_path;
 		}
 
 		try
