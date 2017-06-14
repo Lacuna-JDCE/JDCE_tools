@@ -53,7 +53,7 @@ module.exports = function()
 		/*
 			GraphTools.mark( settings.base_node, node_one, setings.fingerprint );
 		*/
-		// The code above would mark the function at foo.js@0:42 called (from global scope), and the function at bar.js@123:492 called from the function at foo.j@0:42.
+		// The code above (node_one -> node_two and base_node -> node_one) would mark the function at foo.js@0:42 called (from global scope), and the function at bar.js@123:492 called from the function at foo.j@0:42.
 		// i.e. {global} -> foo.js@0:42 -> bar.js@123:492
 
 
@@ -95,8 +95,8 @@ module.exports = function()
 		source: '<js source code>',					// Plain text source of this script.
 		file: 'foo.js',								// The location of the script, relative to the HTML file. Scripts in the HTML file use the name of the HTML file itself, e.g. 'index.html'.
 		full_path: 'folder/foo.js',					// The full path of the script, useful for e.g. readFile.
-		file_indexed: 'index.html#3',				// same as file, except in the case of the HTML file, with an # and the script ID appended.
-		full_path_indexed: 'folder/index.html#4',	// As file_indexed, but for full_path.
+		file_indexed: 'index.html#3',				// same as file, except in the case of the HTML file, appended with an # and the script ID appended.
+		full_path_indexed: 'folder/index.html#3',	// As file_indexed, but for full_path.
 		functions: [func, func, func],				// An array of functions within this file. See below for contents.
 		location: {start, end}						// If type is 'inline', the offset to the start/end of the HTML document.
 	}

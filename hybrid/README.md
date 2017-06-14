@@ -18,6 +18,7 @@ Algorithms might have other requirements, as indicated below.
 npm install
 npm --prefix ./algorithms/static install ./algorithms/static
 npm --prefix ./algorithms/dynamic install ./algorithms/dynamic
+npm --prefix ./algorithms/nativecalls install ./algorithms/nativecalls
 ```
 
 
