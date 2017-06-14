@@ -45,12 +45,14 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 
 The following algorithms are available by default:
 
-| Name         | Description                                           | Additional requirements       |
-|--------------|-------------------------------------------------------|-------------------------------|
-| static       | Static analysis                                       |                               |
-| dynamic      | Dynamic analysis                                      | Valid <head> tag in HTML      |
-| random       | Keeps random functions                                |                               |
-| nativecalls  | Keeps inline function expressions in native functions |                               |
+| Name         | Description                                                    | Additional requirements       |
+|--------------|----------------------------------------------------------------|-------------------------------|
+| static       | Static analysis                                                |                               |
+| dynamic      | Dynamic analysis                                               | Valid <head> tag in HTML      |
+| random       | Marks random functions                                         |                               |
+| nativecalls  | Marks inline function expression arguments in native functions |                               |
+
+
 
 
 
