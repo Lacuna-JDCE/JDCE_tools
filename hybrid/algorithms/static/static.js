@@ -73,9 +73,9 @@ module.exports = function(script_data, html_file)
 	// Retrieve all called functions
 	cg.edges.iter(function(caller, called)
 	{
-		if(called.type == 'NativeVertex' || caller.type == 'NativeVertex')
+		if(called.type == 'NativeVertex')
 		{
-			// We don't care about native functions (e.g. Math.floor).
+			// We don't care about calls to native functions (e.g. Math.floor or Array.prototype.map).
 			return;
 		};
 
