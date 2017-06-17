@@ -98,11 +98,6 @@ define(function (require, exports) {
 
     /* Build an AST from a collection of source files. */
     function buildAST(files) {
-/*        var sources = files.map(function (file) {
-            return { filename: file,
-                program: fs.readFileSync(file, 'utf-8') };
-        });
-*/
 		var sources = files;
 
         var ast = {
@@ -116,12 +111,13 @@ define(function (require, exports) {
             ast.programs.push(prog);
         });
         init(ast);
+
         ast.attr.sloc = ast.programs
             .map(function(program){
                 return program.attr.sloc;
             }).reduce(function(previous, current) {
             return previous + current;
-        });
+        }, 0);
         return ast;
     }
 
