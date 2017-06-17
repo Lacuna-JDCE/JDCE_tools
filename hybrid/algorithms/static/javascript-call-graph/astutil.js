@@ -111,6 +111,7 @@ define(function (require, exports) {
             ast.programs.push(prog);
         });
         init(ast);
+
         ast.attr.sloc = ast.programs
             .map(function(program){
                 return program.attr.sloc;
