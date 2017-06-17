@@ -94,3 +94,13 @@ To prevent collisions, any dependencies should be placed in a folder with the sa
 Then, use the --algorithm flag to specify the new algorithm.
 
 Algorithms should only mark edges (with the provided `find_node` and `mark` functions), and not modify the files or nodes (graph) in any other way.
+
+
+
+## Attributions
+This project heavily relies on code from several other projects:
+
++ [abort/javascript-call-graph](https://github.com/abort/javascript-call-graph/) - `static` and `nativecalls` algorithms
++ [wala/WALA](https://github.com/wala/WALA/) - `walacg` algorithm (source can be found [here](../WalaCG/WalaCG.java))
+
+More information on other used packages and libraries can be found in the `package.json` files in the project.
