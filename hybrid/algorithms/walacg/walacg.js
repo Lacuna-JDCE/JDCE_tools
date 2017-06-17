@@ -93,7 +93,7 @@ function fix_caller(caller_location, script_data, html_path, folder, first_html_
 		}
 
 		// Remove the path in front of the file name, because the framework expects file names relative to the dir.
-		caller_location.file = caller_location.file.substr(folder.length);
+		caller_location.file = caller_location.file.substr(folder.length + 1); // + slash
 
 		return get_containing_function(caller_location, script_info);
 	}else{
@@ -116,7 +116,7 @@ function fix_called(called_location, script_data, html_path, folder, first_html_
 		}
 
 		// Remove the path in front of the file name, because the framework expects file names relative to the dir.
-		called_location.file = called_location.file.substr(folder.length);
+		called_location.file = called_location.file.substr(folder.length + 1); // + slash
 
 		return called_location;
 	}else{
