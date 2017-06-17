@@ -15,17 +15,20 @@ function run_wala(folder, html_file, timeout, callback)
 		settings = {timeout: timeout};
 	}
 
+	// Run the WALA jar.
 	let result = child_process.exec(command, settings, function(error, stdout, stderr)
 	{
 		if(error)
 		{
-			console.log('WALA returned an error:');
+			console.log('================================================================================');
+			console.log('WALA returned an error. Is the HTML file (' + html_file + ') malformed?');
+			console.log('--------------------------------------------------------------------------------');
 			console.log(error.message);
+			console.log('================================================================================');
 			callback(null);
-			return;
+		}else{
+			callback(stdout);
 		}
-
-		callback(stdout);
 	});
 }
 
@@ -153,7 +156,8 @@ module.exports = function(script_data, folder, html_file, timeout, callback)
 
 		if(result == null)
 		{
-			return [];
+			callback([]);
+			return;
 		}
 
 
