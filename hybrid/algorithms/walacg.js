@@ -16,7 +16,7 @@ module.exports = function()
 {
 	this.run = function(settings, callback)
 	{
-		walacg_analyzer(settings.scripts, settings.directory, settings.html_file, function(called_functions)
+		walacg_analyzer(settings.scripts, settings.directory, settings.html_file, settings.timeout, function(called_functions)
 		{
 			// For each function
 			called_functions.forEach(function(funcs)

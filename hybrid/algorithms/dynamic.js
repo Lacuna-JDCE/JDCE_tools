@@ -3,6 +3,7 @@
 	Dynamic analysis algorithm for the 'hybrid' JDCE tool.
 
 	Dynamically analyze the source, then returns a list of functions to remove.
+
 	Because we can't easily detect calling nodes, mark all functions called from the base caller node.
 	This doesn't result in an accurate graph, but does preserve what functions were called.
 */

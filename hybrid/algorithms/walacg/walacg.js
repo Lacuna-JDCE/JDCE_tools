@@ -5,11 +5,17 @@ const path = require('path'),
       esprima = require('esprima');
 
 
-function run_wala(folder, html_file, callback)
+function run_wala(folder, html_file, timeout, callback)
 {
 	let command = 'java -jar ./algorithms/walacg/WalaCG.jar ' + folder + ' ' + html_file;
+	let settings = {};
 
-	let result = child_process.exec(command, {}, function(error, stdout, stderr)
+	if(timeout)
+	{
+		settings = {timeout: timeout};
+	}
+
+	let result = child_process.exec(command, settings, function(error, stdout, stderr)
 	{
 		if(error)
 		{
@@ -139,9 +145,9 @@ function get_containing_function(called_location, script_info)
 }
 
 
-module.exports = function(script_data, folder, html_file, callback)
+module.exports = function(script_data, folder, html_file, timeout, callback)
 {
-	run_wala(folder, html_file, function(result)
+	run_wala(folder, html_file, timeout, function(result)
 	{
 		let called_functions = [];
 

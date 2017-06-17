@@ -40,18 +40,19 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 | --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
 | --noremove   | -n    | Don't remove uncalled nodes.                            |                     |
 | --entire     | -e    | Output disconnected nodes in graph (only with --graph). |                     |
-| --timeout    | -t    | Pass a timeout value to algorithms (not enforced).      | 5000                |
+| --timeout    | -t    | Pass a timeout value to algorithms (not enforced).      |                     |
 
 
 
 The following algorithms are available by default:
 
-| Name         | Description                                                    | Additional requirements       |
-|--------------|----------------------------------------------------------------|-------------------------------|
-| static       | Static analysis                                                |                               |
-| dynamic      | Dynamic analysis                                               | Valid <head> tag in HTML      |
-| random       | Marks random functions                                         |                               |
-| nativecalls  | Marks inline function expression arguments in native functions |                               |
+| Name         | Description                                                    | Additional requirements                                  |
+|--------------|----------------------------------------------------------------|----------------------------------------------------------|
+| static       | Static analysis                                                |                                                          |
+| dynamic      | Dynamic analysis                                               | Valid <head> tag in HTML                                 |
+| random       | Marks random functions                                         |                                                          |
+| nativecalls  | Marks inline function expression arguments in native functions |                                                          |
+| walacg       | WALA JS callgraph                                              | `java` installed, all <script> tags should be JavaScript |
 
 
 

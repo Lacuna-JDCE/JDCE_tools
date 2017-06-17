@@ -32,8 +32,9 @@ module.exports = function()
 		// Load the page.
 		this.driver.get(url);
 
-		// After the timeout, collect the console.log entries and call the success callback function.
-		setTimeout(function()
+
+		// The function to run.
+		let runner = function()
 		{
 			let logs = [];
 
@@ -47,7 +48,15 @@ module.exports = function()
 
 				success(logs);
 			});
-		}, timeout);
+		};
+
+		if(timeout)
+		{
+			// After the timeout, collect the console.log entries and call the success callback function.
+			setTimeout(runner, timeout);
+		}else{
+			runner();
+		}
 	};
 
 

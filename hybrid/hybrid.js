@@ -68,8 +68,7 @@ let settings =
 	graphfile: 'output.dot',
 	algorithm: [],
 	noremove: false,
-	entire: false,
-	timeout: 5000
+	entire: false
 }.extend(options);
 
 
