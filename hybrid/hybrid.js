@@ -41,7 +41,9 @@ try
 
 		{ name: 'entire', type: Boolean, alias: 'e' },
 
-		{ name: 'timeout', type: Number, alias: 't' }
+		{ name: 'timeout', type: Number, alias: 't' },
+
+		{ name: 'pace', type: Boolean, alias: 'p' }
 	]);
 }catch(exception)
 {
@@ -68,7 +70,8 @@ let settings =
 	graphfile: 'output.dot',
 	algorithm: [],
 	noremove: false,
-	entire: false
+	entire: false,
+	pace: false
 }.extend(options);
 
 
@@ -132,7 +135,8 @@ try
 		algorithm: settings.algorithm,
 		noremove: settings.noremove,
 		show_disconnected: settings.entire,
-		timeout: settings.timeout
+		timeout: settings.timeout,
+		pace: settings.pace
 	}, function(results)
 	{
 		// If the CSV option was set, output result data to the csv file (see 'csv' above).

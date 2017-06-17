@@ -39,10 +39,10 @@ _directory_ is the directory the tool is run upon (mandatory); this should be a 
 | --graph      | -g    | Enable function graph output.                           |                     |
 | --graphfile  | -d    | Specify graph (DOT) output location (only with --graph) | output.dot          |
 | --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
-| --noremove   | -n    | Don't remove uncalled nodes.                            |                     |
 | --entire     | -e    | Output disconnected nodes in graph (only with --graph). |                     |
+| --noremove   | -n    | Don't remove uncalled nodes.                            |                     |
 | --timeout    | -t    | Pass a timeout value to algorithms (not enforced).      |                     |
-
+| --pace       | -p    | Display when an algorithm starts running                |                     |
 
 
 The following algorithms are available by default:

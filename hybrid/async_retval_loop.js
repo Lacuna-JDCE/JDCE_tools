@@ -22,6 +22,12 @@ module.exports = function(functions, settings, callback)
 
 		settings.fingerprint = settings.fingerprints[i + 1];
 
+		if(settings.pace)
+		{
+			console.log('running algorithm ' + settings.fingerprint.name + '...');
+		}
+
+
 		functions[i](settings, loop);
 	}
  
