@@ -9,7 +9,15 @@ This Node.js script analyses a web application within a directory and removes un
 
 ## Prerequisites
 Assumes all JavaScript code in the directory it is run upon is valid (i.e. no parse errors).
-Algorithms might have other requirements, as indicated below.
+Algorithms might have other requirements, as indicated in the table below.
+
+Requires the following software installed on the host system:
+
++ Node.js
++ npm
+
+
+
 
 
 
