@@ -12,6 +12,7 @@ var selenium = require('selenium-webdriver')
 module.exports = function()
 {
 	this.driver = null;
+	this.min_required_time = 5000;
 
 	this.start = function()
 	{
@@ -50,12 +51,13 @@ module.exports = function()
 			});
 		};
 
+			// After the timeout, collect the console.log entries and call the success callback function.
 		if(timeout)
 		{
-			// After the timeout, collect the console.log entries and call the success callback function.
-			setTimeout(runner, timeout);
+			// Wait at least min_required_time (browser startup time) seconds, more if we have a longer timeout.
+			setTimeout(runner, Math.max(timeout, me.min_required_time));
 		}else{
-			runner();
+			setTimeout(runner, me.min_required_time);
 		}
 	};
 
