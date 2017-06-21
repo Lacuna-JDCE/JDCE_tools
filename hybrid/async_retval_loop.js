@@ -8,28 +8,39 @@
 module.exports = function(functions, settings, callback)
 {
 	let i = -1,
-	    length = functions.length;
+	    length = functions.length,
+	    algorithm_results = [];
 
 	let loop = function(result)
 	{
 		i++;
 
-		if( i == length )
+		if(i >= 1)
 		{
-			callback();
-			return;
+			if( i <= length)
+			{
+				algorithm_results.push( [settings.fingerprints[i].name, result] );
+			}else{
+				return
+			}
+
+			if( i == length )
+			{
+				callback(algorithm_results);
+				return;
+			}
 		}
 
-		settings.fingerprint = settings.fingerprints[i + 1];
+
+		settings.fingerprint = settings.fingerprints[i + 1];	// +1 for ignoring CONSTRUCTED edge type.
 
 		if(settings.pace)
 		{
 			console.log('running algorithm ' + settings.fingerprint.name + '...');
 		}
 
-
 		functions[i](settings, loop);
 	}
  
-	loop();
+	let result = loop();
 };

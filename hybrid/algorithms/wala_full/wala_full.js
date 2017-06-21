@@ -5,9 +5,9 @@ const path = require('path'),
       esprima = require('esprima');
 
 
-function run_wala(folder, html_file, timeout, callback)
+function run_wala(folder, html_file, timeout, callback, onerror)
 {
-	let command = 'java -jar ./algorithms/walacg/WalaCG.jar ' + folder + ' ' + html_file;
+	let command = 'java -jar ./algorithms/wala_full/WalaCG.jar ' + folder + ' ' + html_file;
 
 	let settings = {};
 
@@ -19,16 +19,12 @@ function run_wala(folder, html_file, timeout, callback)
 	settings.maxBuffer = 1024 * 1000 * 1000;	// 1 GB
 
 	// Run the WALA jar.
-	let result = child_process.exec(command, settings, function(error, stdout, stderr)
+	child_process.exec(command, settings, function(error, stdout, stderr)
 	{
 		if(error)
 		{
-			console.log('================================================================================');
-			console.log('WALA returned an error:');
-			console.log('--------------------------------------------------------------------------------');
-			console.log(error.message);
-			console.log('================================================================================');
-			callback(null);
+			onerror(error.message);
+			callback('{}');
 		}else{
 			callback(stdout);
 		}
@@ -164,7 +160,7 @@ function get_containing_function(called_location, script_info)
 }
 
 
-module.exports = function(script_data, folder, html_file, timeout, callback)
+module.exports = function(script_data, folder, html_file, timeout, error_handler, callback)
 {
 	run_wala(folder, html_file, timeout, function(result)
 	{
@@ -211,5 +207,9 @@ module.exports = function(script_data, folder, html_file, timeout, callback)
 		}
 
 		callback(called_functions);
+	}, function(error_message)
+	{
+		error_handler('wala_full', error_message);
+		callback(null);
 	});
 };

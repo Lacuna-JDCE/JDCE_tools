@@ -43,7 +43,9 @@ try
 
 		{ name: 'timeout', type: Number, alias: 't' },
 
-		{ name: 'pace', type: Boolean, alias: 'p' }
+		{ name: 'pace', type: Boolean, alias: 'p' },
+
+		{name: 'missteps', type: Boolean, alias: 'm' }
 	]);
 }catch(exception)
 {
@@ -71,7 +73,8 @@ let settings =
 	algorithm: [],
 	noremove: false,
 	entire: false,
-	pace: false
+	pace: false,
+	missteps: false
 }.extend(options);
 
 
@@ -85,11 +88,13 @@ let csv = new csv_factory(settings.csvfile, function(data)
 	// Filter function; preprocess data to uniform output.
 	return [
 		settings.directory,
-		data.js_files || 0,
-		data.function_count || 0,
-		data.functions_removed || 0,
-		data.run_time || 0,
-		data.error || ''
+		data.js_files,
+		data.function_count,
+		data.functions_removed,
+		data.run_time,
+		data.algorithm_info,
+		data.error,
+		data.load_successful
 	];
 });
 
@@ -136,7 +141,8 @@ try
 		noremove: settings.noremove,
 		show_disconnected: settings.entire,
 		timeout: settings.timeout,
-		pace: settings.pace
+		pace: settings.pace,
+		missteps: settings.missteps
 	}, function(results)
 	{
 		// If the CSV option was set, output result data to the csv file (see 'csv' above).
@@ -161,5 +167,6 @@ try
 	});
 }catch(error)
 {
+	console.log('jdce.js error:');
 	console.log(error);
 }

@@ -22,18 +22,25 @@ module.exports = function()
 		// For each function
 		called_functions.forEach(function(funcs)
 		{
-			let called = GraphTools.find_node(funcs.called, settings.nodes)
-
-			if( funcs.caller.start == null && funcs.caller.end == null )
+			try
 			{
-				caller = settings.base_node;
-			}else{
-				caller = GraphTools.find_node(funcs.caller, settings.nodes);
-			}
+				let called = GraphTools.find_node(funcs.called, settings.nodes)
 
-			GraphTools.mark( caller, called, settings.fingerprint );
+				if( funcs.caller.start == null && funcs.caller.end == null )
+				{
+					caller = settings.base_node;
+				}else{
+					caller = GraphTools.find_node(funcs.caller, settings.nodes);
+				}
+
+				GraphTools.mark( caller, called, settings.fingerprint );
+			}catch(e)
+			{
+				settings.error_handler('static', e);
+				callback(false);
+			}
 		});
 
-		callback();
+		callback(true);
 	};
 };

@@ -60,7 +60,8 @@ module.exports = function()
 
 		// When we're completely done, call the callback function to return.
 		// If you're running something async, call the callback from that callback function.
-		callback();
+		// Pass 'true' in the callback if it ran succesfully, 'false' otherwise.
+		callback(true);
 	};
 };
 
@@ -85,6 +86,7 @@ module.exports = function()
 		nodes: [Node, Node, ...],						// A list of nodes in the graph.
 		fingerprint										// The fingerprint for this algorithm. Use it when marking edges.
 		timeout: 5000									// A timeout request (stop running & return after this many milliseconds).
+		error_handler( type, message )					// A function that displays errors in a uniform way.
 	}
 
 

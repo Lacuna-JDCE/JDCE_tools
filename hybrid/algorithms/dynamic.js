@@ -24,7 +24,6 @@ module.exports = function()
 		dynamic_analyzer(settings.directory, settings.html_path, settings.timeout, settings.scripts, parse_results);
 
 
-
 		// Parse the results.
 		function parse_results(data)
 		{
@@ -36,21 +35,29 @@ module.exports = function()
 				}
 			}
 
-			callback();
+			callback(true);
 		};
-
 
 
 		// A function that marks nodes based on a list of called functions.
 		function mark_nodes_in_file(file, locations)
 		{
-			locations.forEach(function(location)
+			try
 			{
-				let loc = {file: file, start: location.start, end: location.end};
-				let called = GraphTools.find_node(loc, settings.nodes)
+				locations.forEach(function(location)
+				{
+					let loc = {file: file, start: location.start, end: location.end};
 
-				GraphTools.mark( settings.base_node, called, settings.fingerprint );
-			});
+					let called = GraphTools.find_node(loc, settings.nodes);
+
+
+					GraphTools.mark( settings.base_node, called, settings.fingerprint );
+				});
+			}catch(e)
+			{
+				settings.error_handler('dynamic', e);
+				callback(false);
+			}
 		};
 	};
 };

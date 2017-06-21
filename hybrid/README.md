@@ -27,7 +27,8 @@ npm install
 npm --prefix ./algorithms/static install ./algorithms/static
 npm --prefix ./algorithms/dynamic install ./algorithms/dynamic
 npm --prefix ./algorithms/nativecalls install ./algorithms/nativecalls
-npm --prefix ./algorithms/walacg install ./algorithms/walacg
+npm --prefix ./algorithms/wala_full install ./algorithms/wala_full
+npm --prefix ./algorithms/wala_single install ./algorithms/wala_single
 ```
 
 
@@ -61,8 +62,7 @@ The following algorithms are available by default:
 | dynamic      | Dynamic analysis                                               | Valid <head> tag in HTML                                 |
 | random       | Marks random functions                                         |                                                          |
 | nativecalls  | Marks inline function expression arguments in native functions |                                                          |
-| walacg       | WALA JS callgraph                                              | `java` installed, all <script> tags should be JavaScript |
-
+| wala_full    | WALA JS callgraph (full HTML page)                             | `java` installed, all <script> tags should be JavaScript |
 
 
 
@@ -70,7 +70,7 @@ The following algorithms are available by default:
 
 The csv file has the following columns:
 ```
-directory name, JS files processed, # functions, # functions removed, run time (in ms), error messages
+directory name, JS scripts processed, # functions, # functions removed, run time (in ms), algorithm info, error messages, on load browser error?
 ```
 
 The graph file is outputted in DOT format, which you can visualize online [here](http://www.webgraphviz.com/) or on the command line with `dot` (e.g. `dot -Tpng output.dot -o output.png`).

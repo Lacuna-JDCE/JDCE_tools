@@ -184,7 +184,10 @@ module.exports =
 			js_files: 0,
 			function_count: 0,
 			functions_removed: 0,
-			run_time: 0
+			run_time: 0,
+			algorithm_info: [],
+			error: '',
+			load_successful: null
 		};
 
 
@@ -214,12 +217,25 @@ module.exports =
 			base_node: GraphTools.get_base_caller_node(nodes),
 			fingerprints: algorithms.fingerprints,
 			timeout: settings.timeout,
-			pace: settings.pace
+			pace: settings.pace,
+			error_handler: function(name, message)
+			{
+				if(settings.missteps)
+				{
+					console.error('Algorithm \'' + name + '\' encountered an error:', message);
+				}
+			}
 		};
 
 		// Run each algorithm in turn, letting it edit the graph (mark edges).
-		async_loop(algorithms.functions, algorithm_settings, function()
+		async_loop(algorithms.functions, algorithm_settings, function(algorithm_run_info)
 		{
+			stats.algorithm_info = algorithm_run_info.reduce(function(acc, current)
+			{
+				acc.push( current[0] + ':' + current[1] );
+				return acc;
+			}, []).join(', ');
+
 			// Once we're done with all the algorithms, remove any edge that was constructed.
 			if(!settings.noremove)
 			{
@@ -252,7 +268,7 @@ module.exports =
 		{
 			// Calculate run time and save it in the stats object.
 			let end_time = process.hrtime(start_time);
-			stats.run_time = ((end_time[0] * 1e9 + end_time[1]) * 1e-6).toFixed(0);
+			stats.run_time = parseInt(   ((end_time[0] * 1e9 + end_time[1]) * 1e-6).toFixed(0),  10);
 
 			// Return statistics to caller.
 			callback( stats );
