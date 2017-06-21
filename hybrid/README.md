@@ -39,19 +39,20 @@ node ./hybrid.js <directory> [options]
 ```
 _directory_ is the directory the tool is run upon (mandatory); this should be a relative path. _options_ allow you to specify more settings:
 
-| Long         | Short | Description                                             | Default             |
-|--------------|-------|---------------------------------------------------------|---------------------|
-| --index      | -i    | Specify the main HTML file.                             | index.html          |
-| --verbose    | -v    | Show output to stdout.                                  |                     |
-| --csv        | -c    | Enable output to CSV file in addition to stdout.        |                     |
-| --csvfile    | -f    | Specify CSV file to append data to (only with --csv).   | output.csv          |
-| --graph      | -g    | Enable function graph output.                           |                     |
-| --graphfile  | -d    | Specify graph (DOT) output location (only with --graph) | output.dot          |
-| --algorithm  | -a    | Specify algorithms (multiple allowed, space separated). |                     |
-| --entire     | -e    | Output disconnected nodes in graph (only with --graph). |                     |
-| --noremove   | -n    | Don't remove uncalled nodes.                            |                     |
-| --timeout    | -t    | Pass a timeout value to algorithms (not enforced).      |                     |
-| --pace       | -p    | Display when an algorithm starts running                |                     |
+| Long         | Short | Description                                              | Default             |
+|--------------|-------|----------------------------------------------------------|---------------------|
+| --index      | -i    | Specify the main HTML file.                              | index.html          |
+| --verbose    | -v    | Show output to stdout.                                   |                     |
+| --csv        | -c    | Enable output to CSV file.                               |                     |
+| --csvfile    | -f    | Specify CSV file to append data to (only with --csv).    | output.csv          |
+| --graph      | -g    | Enable function graph output.                            |                     |
+| --graphfile  | -d    | Specify graph (DOT) output location (only with --graph). | output.dot          |
+| --algorithm  | -a    | Specify algorithms (multiple allowed, space separated).  |                     |
+| --entire     | -e    | Output disconnected nodes in graph (only with --graph).  |                     |
+| --noremove   | -n    | Don't remove uncalled nodes.                             |                     |
+| --timeout    | -t    | Pass a timeout value to algorithms (not enforced).       |                     |
+| --pace       | -p    | Display when an algorithm starts running.                |                     |
+| --missteps   | -m    | When set, display algorithm errors.                      |                     |
 
 
 The following algorithms are available by default:

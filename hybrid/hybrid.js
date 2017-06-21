@@ -93,8 +93,7 @@ let csv = new csv_factory(settings.csvfile, function(data)
 		data.functions_removed,
 		data.run_time,
 		data.algorithm_info,
-		data.error,
-		data.load_successful
+		data.error
 	];
 });
 

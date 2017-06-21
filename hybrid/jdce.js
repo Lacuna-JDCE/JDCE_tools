@@ -186,8 +186,7 @@ module.exports =
 			functions_removed: 0,
 			run_time: 0,
 			algorithm_info: [],
-			error: '',
-			load_successful: null
+			error: ''
 		};
 
 
