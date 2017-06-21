@@ -63,6 +63,7 @@ The following algorithms are available by default:
 | random       | Marks random functions                                         |                                                          |
 | nativecalls  | Marks inline function expression arguments in native functions |                                                          |
 | wala_full    | WALA JS callgraph (full HTML page)                             | `java` installed, all <script> tags should be JavaScript |
+| wala_single  | WALA JS callgraph (per-file only)                              | `java` installed                                         |
 
 
 
