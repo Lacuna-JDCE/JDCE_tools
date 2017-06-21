@@ -191,8 +191,10 @@ module.exports =
 		// Retrieve all scripts in this page (ordered based on execution order).
 		let scripts = webpage_tools.get_scripts( settings.html_path, settings.directory );
 
+		stats.js_files = scripts.length;
+
 		// Create a graph with each function as a node, plus the base caller node.
-		// The default 
+		// Connect them all together from the start, using the CONSTRUCTED_EDGE type.
 		let nodes = GraphTools.build_function_graph(scripts, CONSTRUCTED_EDGE.value);
 
 		// The number of functions is the number of nodes in the graph, minus one for the base caller node.
